@@ -1,0 +1,25 @@
+.textbox {
+  font-family: "Poppins", sans-serif;
+  padding: 0.5%;
+  width: 8rem;
+  border: none;
+  outline: none;
+  /* border: 1px solid rgb(33, 33, 33); */
+  color: rgb(0, 0, 0);
+  border-radius: 2px;
+  transition: all 0.2s ease-in-out;
+}
+.textbox:hover {
+  cursor: pointer;
+  background-color: rgb(240, 239, 239);
+  transition: all 0.2s ease-in-out;
+}
+.textbox-red {
+  background: rgba(240, 118, 118, 0.856);
+}
+.textbox:active,
+.textbox:focus {
+  transition: all 0.2s ease-in-out;
+  border-color: transparent;
+  /* border-bottom: 2px solid #1c87c9; */
+}

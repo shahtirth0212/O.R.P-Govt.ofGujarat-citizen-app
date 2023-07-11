@@ -1,0 +1,28 @@
+.linkButton {
+  font-weight: bold;
+  font-family: "Poppins", sans-serif;
+  /* border: 2px solid rgb(248, 93, 93); */
+  color: rgb(208, 187, 65);
+  background-color: transparent;
+  padding: 1% 2% 1% 2%;
+  letter-spacing: 2px;
+  border: none;
+  /* border-radius: 10px; */
+  transition: all 0.3s ease-out;
+  width: 180px;
+  height: 40px;
+}
+.linkButton:hover {
+  transition: all 0.3s ease-out;
+  color: rgb(118, 118, 13);
+  /* background-color: rgb(59, 16, 16); */
+  cursor: pointer;
+}
+.linkButton:active {
+  transform: scale(0.95);
+}
+@media screen and (max-width: 414px) {
+  .linkButton {
+    margin-left: -16px;
+  }
+}
