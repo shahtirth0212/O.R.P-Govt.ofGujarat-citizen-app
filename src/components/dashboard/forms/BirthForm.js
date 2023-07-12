@@ -3,6 +3,7 @@ import DATEPCIKER from 'react-date-picker';
 import 'react-date-picker/dist/DatePicker.css';
 import 'react-calendar/dist/Calendar.css';
 import axios from 'axios';
+import { useSelector } from 'react-redux';
 
 
 const ONLY_NUMBER_VALIDATOR = new RegExp('^[0-9]+$');
@@ -42,14 +43,21 @@ const DISTRICTS = [
     'Valsad',
     'Vadodara'
 ]
+const RELIGIONS = ['Hindu', 'Sikh', 'Christian', 'Jain', 'Buddhism', 'Islam', 'Others'];
+const LITERACIES = ["Below 7th", "7th-12th", "Undergraduate", "Graduate"];
+const DELIVERY_TREATMENTS = ["Government", "Private", "Relatives", "Others"];
+const DELIVERY_TYPES = ["Natural", "Vacuum", "Cesarean"];
+const IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png"];
+const GENDERS = ["male", "female", "others"];
 
-const motherReducer = (state, action) => {
+const parentReducer = (state, action) => {
     switch (action.type) {
         case "setAadhar":
             return { ...state, aadharNumber: action.aadharNumber }
         case "setAadharVal":
-            if (!ONLY_NUMBER_VALIDATOR.test(state.aadharNumber) || state.aadharNumber.trim().length !== 12)
+            if (!ONLY_NUMBER_VALIDATOR.test(state.aadharNumber) || state.aadharNumber.trim().length !== 12) {
                 return { ...state, aadharNumberVal: false };
+            }
             else
                 return { ...state, aadharNumberVal: true };
         case "setAadharOTP":
@@ -64,11 +72,12 @@ const motherReducer = (state, action) => {
             break;
     }
 }
-
-
+const motherReducer = parentReducer;
+const fatherReducer = parentReducer;
 
 
 function BirthForm({ API }) {
+    const ME = useSelector(state => state.citizen.citizen);
     // Child date of birth
     const [childDOB, setChildDOB] = useState(new Date());
     const [childDOBVal, setChildDOBVal] = useState(false);
@@ -79,6 +88,16 @@ function BirthForm({ API }) {
             setChildDOBVal(true);
         }
     }, [childDOB]);
+    // Child gender
+    const [childGender, setChildGender] = useState("");
+    const [childGenderVal, setChildGenderVal] = useState(false);
+    useEffect(() => {
+        if (GENDERS.includes(childGender)) {
+            setChildGenderVal(true);
+        } else {
+            setChildGenderVal(false)
+        }
+    }, [childGender]);
     // Child first name
     const [first, setFirst] = useState("");
     const [firstVal, setFirstVal] = useState(false);
@@ -123,14 +142,14 @@ function BirthForm({ API }) {
     const [placeOfBirth, setPlaceOfBirth] = useState("");
     const [placeOfBirthVal, setPlaceOfBirthVal] = useState(false);
     useEffect(() => {
-        if (placeOfBirth in DISTRICTS) {
+        if (DISTRICTS.includes(placeOfBirth)) {
             setPlaceOfBirthVal(true)
         } else {
             setPlaceOfBirthVal(false);
         }
     }, [placeOfBirth]);
     // 
-    // Mother
+    // Mother ---------------------------------------------------------------------------
     // 
     const [motherAadhar, motherDispatch] = useReducer(motherReducer,
         {
@@ -161,6 +180,160 @@ function BirthForm({ API }) {
         // eslint-disable-next-line
     }, [motherOTP, API]);
 
+    const [motherReligion, setMotherReligion] = useState("");
+    const [motherReligionVal, setMotherReligionVal] = useState(false);
+    useEffect(() => {
+        if (RELIGIONS.includes(motherReligion)) {
+            setMotherReligionVal(true);
+        } else {
+            setMotherReligionVal(false);
+        }
+    }, [motherReligion]);
+
+    const [motherLiteracy, setMotherLiteracy] = useState("");
+    const [motherLiteracyVal, setMotherLiteracyVal] = useState(false);
+    useEffect(() => {
+        if (LITERACIES.includes(motherLiteracy)) {
+            setMotherLiteracyVal(true);
+        } else {
+            setMotherLiteracyVal(false);
+        }
+    }, [motherLiteracy]);
+
+    const [motherAgeBirth, setMotherAgeBirth] = useState(null);
+    const [motherAgeBirthVal, setMotherAgeBirthVal] = useState(false);
+    useEffect(() => {
+        if (motherAgeBirth <= 10 || motherAgeBirth >= 50) {
+            setMotherAgeBirthVal(false);
+        } else {
+            setMotherAgeBirthVal(true);
+        }
+    }, [motherAgeBirth]);
+
+    const [motherOccupation, setMotherOccupation] = useState("");
+    const [motherOccupationVal, setMotherOccupationVal] = useState(false);
+    useEffect(() => {
+        if (motherOccupation.trim().length >= 3) {
+            setMotherOccupationVal(true);
+        } else {
+            setMotherOccupationVal(false);
+        }
+    }, [motherOccupation]);
+    // 
+    // Father ---------------------------------------------------------------------------
+    // 
+    const [fatherAadhar, fatherDispatch] = useReducer(fatherReducer,
+        {
+            aadharNumber: "",
+            aadharNumberVal: null,
+            aadharOTP: { sent: null, msg: "", otp: "" },
+            aadharVerification: { verified: null, msg: "" }
+        });
+    const [fatherOTP, setFatherOTP] = useState("");
+    const [fatherOTPVal, setFatherOTPVal] = useState(false);
+    const [fatherAadharData, setFatherAadharData] = useState(null);
+    useEffect(() => {
+        if (!ONLY_NUMBER_VALIDATOR.test(fatherOTP) || fatherOTP.trim().length !== 4) {
+            setFatherOTPVal(false);
+        } else {
+            setFatherOTPVal(true);
+            axios.post(`${API}/citizen/verify-otp-for-aadhar`, { otp: fatherAadhar.aadharOTP.otp, clientOtp: fatherOTP, aadhar: fatherAadharData })
+                .then(result => {
+                    const DATA = result.data;
+                    if (DATA.err) {
+                        fatherDispatch({ type: "setAadharVerification", verified: false, msg: DATA.msg });
+                    } else {
+                        fatherDispatch({ type: "setAadharVerification", verified: true, msg: DATA.msg });
+                        setFatherAadharData(DATA.data);
+                    }
+                });
+        }
+        // eslint-disable-next-line
+    }, [fatherOTP, API]);
+
+    const [fatherReligion, setFatherReligion] = useState("");
+    const [fatherReligionVal, setFatherReligionVal] = useState(false);
+    useEffect(() => {
+        if (RELIGIONS.includes(fatherReligion)) {
+            setFatherReligionVal(true);
+        } else {
+            setFatherReligionVal(false);
+        }
+    }, [fatherReligion]);
+
+    const [fatherLiteracy, setFatherLiteracy] = useState("");
+    const [fatherLiteracyVal, setFatherLiteracyVal] = useState(false);
+    useEffect(() => {
+        if (LITERACIES.includes(fatherLiteracy)) {
+            setFatherLiteracyVal(true);
+        } else {
+            setFatherLiteracyVal(false);
+        }
+    }, [fatherLiteracy]);
+
+    const [fatherOccupation, setFatherOccupation] = useState("");
+    const [fatherOccupationVal, setFatherOccupationVal] = useState(false);
+    useEffect(() => {
+        if (fatherOccupation.trim().length >= 3) {
+            setFatherOccupationVal(true);
+        } else {
+            setFatherOccupationVal(false);
+        }
+    }, [fatherOccupation]);
+    // 
+    // Other ---------------------------------------------------------------------------
+    // 
+    const [postDelivery, setPostDelivery] = useState("");
+    const [postDeliveryVal, setPostDeliveryVal] = useState(false);
+    useEffect(() => {
+        if (DELIVERY_TREATMENTS.includes(postDelivery)) {
+            setPostDeliveryVal(true);
+        } else {
+            setPostDeliveryVal(false);
+        }
+    }, [postDelivery]);
+
+    const [deliveryType, setDeliveryType] = useState("");
+    const [deliveryTypeVal, setDeliveryTypeVal] = useState(false);
+    useEffect(() => {
+        if (DELIVERY_TYPES.includes(deliveryType)) {
+            setDeliveryTypeVal(true);
+        } else {
+            setDeliveryTypeVal(false);
+        }
+    }, [deliveryType]);
+
+    const [pregDuration, setPregDuration] = useState(null);
+    const [pregDurationVal, setPregDurationVal] = useState(null);
+    useEffect(() => {
+        if (pregDuration <= 28 || pregDuration >= 40) {
+            setPregDurationVal(false);
+        } else {
+            setPregDurationVal(true);
+        }
+    }, [pregDuration]);
+
+    // 
+    // Documents ---------------------------------------------------------------------------
+    // 
+    const [addressProofDOC, setAddressProofDOC] = useState(null);
+    const [addressProofDOCval, setAddressProofDOCval] = useState(false);
+    useEffect(() => {
+        setAddressProofDOCval(image_validation(addressProofDOC));
+    }, [addressProofDOC]);
+
+    const [marriageProofDOC, setMarriageProofDOC] = useState(null);
+    const [marriageProofDOCval, setMarriageProofDOCval] = useState(false);
+    useEffect(() => {
+        setMarriageProofDOCval(image_validation(marriageProofDOC));
+    }, [marriageProofDOC]);
+
+    const [birthProofDOC, setBirthProofDOC] = useState(null);
+    const [birthProofDOCval, setBirthProofDOCval] = useState(false);
+    useEffect(() => {
+        setBirthProofDOCval(image_validation(birthProofDOC));
+    }, [birthProofDOC]);
+
     // Functions
     const verify_mother_aadhar = () => {
         axios.post(`${API}/citizen/services-aadhar-verification`, { aadharNumber: motherAadhar.aadharNumber })
@@ -174,6 +347,68 @@ function BirthForm({ API }) {
                 }
             });
     }
+    const verify_father_aadhar = () => {
+        axios.post(`${API}/citizen/services-aadhar-verification`, { aadharNumber: fatherAadhar.aadharNumber })
+            .then(result => {
+                const DATA = result.data;
+                if (DATA.err) {
+                    fatherDispatch({ type: "setAadharOTP", sent: false, msg: DATA.msg, otp: "" });
+                } else {
+                    fatherDispatch({ type: "setAadharOTP", sent: true, msg: DATA.msg, otp: DATA.data.otp });
+                    setFatherAadharData(DATA.data.aadhar);
+                }
+            });
+    }
+    const image_validation = (file) => {
+        if (
+            !file
+            || !IMAGE_TYPES.includes(file.type)
+            || file.size >= 1000000
+        ) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+    const submit_birth_form = () => {
+        const confirm = window.confirm("Are you sure to submit the form ? This action cannot be reverted");
+        if (!confirm) {
+            return
+        }
+        let birthCertificateFormData = new FormData();
+        birthCertificateFormData.append("childBirthDate", childDOB);
+        birthCertificateFormData.append("childGender", childGender);
+        birthCertificateFormData.append("childFirstName", first);
+        birthCertificateFormData.append("childMiddleName", middle);
+        birthCertificateFormData.append("childLastName", last);
+        birthCertificateFormData.append("childWeight", weight);
+        birthCertificateFormData.append("placeOfBirth", placeOfBirth);
+
+        birthCertificateFormData.append("motherAadhar", motherAadharData.aadharNumber);
+        birthCertificateFormData.append("motherReligion", motherReligion);
+        birthCertificateFormData.append("motherLiteracy", motherLiteracy);
+        birthCertificateFormData.append("motherAgeAtBirth", motherAgeBirth);
+        birthCertificateFormData.append("motherOccupation", motherOccupation);
+
+        birthCertificateFormData.append("fatherAadhar", fatherAadharData.aadharNumber);
+        birthCertificateFormData.append("fatherReligion", fatherReligion);
+        birthCertificateFormData.append("fatherLiteracy", fatherLiteracy);
+        birthCertificateFormData.append("fatherOccupation", fatherOccupation);
+
+        birthCertificateFormData.append("postDeliveryTreatment", postDelivery);
+        birthCertificateFormData.append("deliveryType", deliveryType);
+        birthCertificateFormData.append("pregnancyDurationWeeks", pregDuration);
+
+        birthCertificateFormData.append("permanentAddProofDOC", addressProofDOC);
+        birthCertificateFormData.append("marraigeCertificateDOC", marriageProofDOC);
+        birthCertificateFormData.append("proofOfBirthDOC", birthProofDOC);
+
+        birthCertificateFormData.append("appliedBy", ME._id);
+
+        for (const pair of birthCertificateFormData.entries()) {
+            console.log(`${pair[0]}, ${pair[1]}`);
+        }
+    }
     return (
         <div className='dashboard-birth-form-container'>
             <h3>Registration for Birth Certificate</h3>
@@ -183,6 +418,11 @@ function BirthForm({ API }) {
                 <span>Date of Birth</span>
                 <DATEPCIKER onChange={setChildDOB} format='MM-dd-yyyy' maxDate={new Date()} value={childDOB} />
                 {!childDOBVal && <span>Please enter a valid date</span>}
+
+                <select defaultValue={-1} onChange={e => setChildGender(e.target.value)}>
+                    <option value={-1} disabled>Gender</option>
+                    {GENDERS.map(gender => <option key={gender} value={gender}>{gender}</option>)}
+                </select>
 
                 <input type='text' onChange={e => setFirst(e.target.value)} placeholder='Frist Name'></input>
                 {!firstVal && <span>First name must be at least 3 characters long</span>}
@@ -203,41 +443,179 @@ function BirthForm({ API }) {
                 {!placeOfBirthVal && <span>Please select a district</span>}
             </div>
             {/* Mother Section */}
-            <div className='birth-form-mother-section'>
-                <h5>Mother details</h5>
-                <input
-                    disabled={motherAadhar.aadharVerification.verified}
-                    type='text'
-                    placeholder="Mother's aadhar number"
-                    onChange={e => {
+            {childDOBVal && childGenderVal && firstVal && middleVal && lastVal &&
+                weightVal && placeOfBirthVal &&
+                <div className='birth-form-mother-section'>
+                    <h5>Mother details</h5>
+                    <input
+                        disabled={motherAadhar.aadharVerification.verified}
+                        type='text'
+                        placeholder="Mother's aadhar number"
+                        onChange={e => {
 
-                        motherDispatch({ type: "setAadhar", aadharNumber: e.target.value });
-                        motherDispatch({ type: "setAadharVal" });
+                            motherDispatch({ type: "setAadhar", aadharNumber: e.target.value });
+                            motherDispatch({ type: "setAadharVal" });
+                        }
+                        }
+                    ></input>
+                    {motherAadhar.aadharNumberVal && !motherAadhar.aadharVerification.verified && <button onClick={verify_mother_aadhar}>Verify</button>}
+                    {motherAadhar.aadharOTP.sent !== null && !motherAadhar.aadharVerification.verified && <span>{motherAadhar.aadharOTP.msg}</span>}
+                    {motherAadhar.aadharOTP.sent && !motherAadhar.aadharVerification.verified
+                        &&
+                        <div>
+                            <span>{motherAadhar.aadharOTP.msg}</span>
+                            <input type='text' placeholder='OTP' onChange={e => setMotherOTP(e.target.value)}></input>
+                            {!motherOTPVal && <span>Enter 4 digit OTP</span>}
+                        </div>
                     }
+                    {motherAadhar.aadharVerification.verified !== null
+                        && <span>{motherAadhar.aadharVerification.msg}</span>
                     }
-                ></input>
-                {motherAadhar.aadharNumberVal && !motherAadhar.aadharVerification.verified && <button onClick={verify_mother_aadhar}>Verify</button>}
-                {motherAadhar.aadharOTP.sent !== null && !motherAadhar.aadharVerification.verified && <span>{motherAadhar.aadharOTP.msg}</span>}
-                {motherAadhar.aadharOTP.sent && !motherAadhar.aadharVerification.verified
-                    &&
-                    <div>
-                        <span>{motherAadhar.aadharOTP.msg}</span>
-                        <input type='text' placeholder='OTP' onChange={e => setMotherOTP(e.target.value)}></input>
-                        {!motherOTPVal && <span>Enter 4 digit OTP</span>}
-                    </div>
-                }
-                {motherAadhar.aadharVerification.verified !== null
-                    && <span>{motherAadhar.aadharVerification.msg}</span>
-                }
-                {motherAadhar.aadharVerification.verified
-                    &&
-                    <div>
+                    {motherAadhar.aadharVerification.verified
+                        &&
                         <span>{motherAadharData.firstName} {motherAadharData.middleName} {motherAadharData.lastName}</span>
+                    }
+                    {
+                        motherAadhar.aadharVerification.verified &&
+                        <div>
+                            <div>
+                                <select defaultValue={-1} onChange={e => setMotherReligion(e.target.value)}>
+                                    <option value={-1} disabled>Mother's Religion</option>
+                                    {RELIGIONS.map(religion => <option key={religion} value={religion}>{religion}</option>)}
+                                </select>
+                            </div>
+                            <div>
+                                <select defaultValue={-1} onChange={e => setMotherLiteracy(e.target.value)}>
+                                    <option value={-1} disabled>Mother Literacy</option>
+                                    {LITERACIES.map(literacy => <option key={literacy} value={literacy}>{literacy}</option>)}
+                                </select>
+                            </div>
+                            <div>
+                                <input type='number' max={50} min={10} onChange={e => setMotherAgeBirth(e.target.value)} placeholder="Mother's age at birth of this child"></input>
+                                {!motherAgeBirthVal && <span>Please enter a valid age (10y-50y)</span>}
+                            </div>
+                            <div>
+                                <input type='text' onChange={e => setMotherOccupation(e.target.value)} placeholder="Mother's occupation"></input>
+                                {!motherOccupationVal && <span>Please enter valid value - (Business, Job, etc)</span>}
+                            </div>
+
+                        </div>
+                    }
+                </div>
+            }
+
+            {/* Father Section */}
+            {motherAadhar.aadharVerification.verified && motherReligionVal
+                && motherLiteracyVal && motherAgeBirthVal && motherOccupationVal &&
+                < div className='birth-form-father-section'>
+                    <h5>Father details</h5>
+                    <input
+                        disabled={fatherAadhar.aadharVerification.verified}
+                        type='text'
+                        placeholder="Father's aadhar number"
+                        onChange={e => {
+
+                            fatherDispatch({ type: "setAadhar", aadharNumber: e.target.value });
+                            fatherDispatch({ type: "setAadharVal" });
+                        }
+                        }
+                    ></input>
+                    {fatherAadhar.aadharNumberVal && !fatherAadhar.aadharVerification.verified && <button onClick={verify_father_aadhar}>Verify</button>}
+                    {fatherAadhar.aadharOTP.sent !== null && !fatherAadhar.aadharVerification.verified && <span>{fatherAadhar.aadharOTP.msg}</span>}
+                    {fatherAadhar.aadharOTP.sent && !fatherAadhar.aadharVerification.verified
+                        &&
+                        <div>
+                            <span>{fatherAadhar.aadharOTP.msg}</span>
+                            {/* ! */}
+                            <input type='text' placeholder='OTP' onChange={e => setFatherOTP(e.target.value)}></input>
+                            {!fatherOTPVal && <span>Enter 4 digit OTP</span>}
+                        </div>
+                    }
+                    {fatherAadhar.aadharVerification.verified !== null
+                        && <span>{fatherAadhar.aadharVerification.msg}</span>
+                    }
+                    {fatherAadhar.aadharVerification.verified
+                        &&
+                        <span>{fatherAadharData.firstName} {fatherAadharData.middleName} {fatherAadharData.lastName}</span>
+                    }
+                    {
+                        fatherAadhar.aadharVerification.verified &&
+                        <div>
+                            <div>
+                                <select defaultValue={-1} onChange={e => setFatherReligion(e.target.value)}>
+                                    <option value={-1} disabled>Father's Religion</option>
+                                    {RELIGIONS.map(religion => <option key={religion} value={religion}>{religion}</option>)}
+                                </select>
+                            </div>
+                            <div>
+                                <select defaultValue={-1} onChange={e => setFatherLiteracy(e.target.value)}>
+                                    <option value={-1} disabled>Father Literacy</option>
+                                    {LITERACIES.map(literacy => <option key={literacy} value={literacy}>{literacy}</option>)}
+                                </select>
+                            </div>
+                            <div>
+                                <input type='text' onChange={e => setFatherOccupation(e.target.value)} placeholder="Father's occupation"></input>
+                                {!fatherOccupationVal && <span>Please enter valid value - (Business, Job, etc)</span>}
+                            </div>
+
+                        </div>
+                    }
+                </div>}
+            {/* Other section */}
+            {motherAadhar.aadharVerification.verified && motherReligionVal
+                && motherLiteracyVal && motherAgeBirthVal && motherOccupationVal &&
+                fatherAadhar.aadharVerification.verified && fatherReligionVal
+                && fatherLiteracyVal && fatherOccupationVal &&
+                <div className='birth-form-other-section'>
+                    <h5>Other details</h5>
+                    <div>
+                        <select defaultValue={-1} onChange={e => setPostDelivery(e.target.value)}>
+                            <option value={-1} disabled>Post delivery treatment</option>
+                            {DELIVERY_TREATMENTS.map(treatment => <option value={treatment} key={treatment}>{treatment}</option>)}
+                        </select>
                     </div>
-                }
-            </div>
-        </div>
+                    <div>
+                        <select defaultValue={-1} onChange={e => setDeliveryType(e.target.value)}>
+                            <option value={-1} disabled>Delivery type</option>
+                            {DELIVERY_TYPES.map(type => <option value={type} key={type}>{type}</option>)}
+                        </select>
+                    </div>
+                    <div>
+                        <input type='number' max={40} min={28} onChange={e => setPregDuration(e.target.value)} placeholder="Pregnancy duration (weeks)"></input>
+                        {!pregDurationVal && <span>Please enter a valid duration (28-40)</span>}
+                    </div>
+                </div>
+            }
+            {
+                postDeliveryVal && deliveryTypeVal && pregDurationVal &&
+                <div className='birth-form-documents-section'>
+                    <h5>Other details</h5>
+                    <span>Note:- Only images are accepted(JPEG, JPG, PNG), less than 1MB</span>
+                    <div>
+                        <span>Permanent address proof</span>
+                        <input type='file' onChange={e => setAddressProofDOC(e.target.files[0])} accept="image/*"></input>
+                        {!addressProofDOCval && <span>Please upload a file</span>}
+                    </div>
+                    <div>
+                        <span>Marriage Certificate</span>
+                        <input type='file' onChange={e => setMarriageProofDOC(e.target.files[0])} accept="image/*"></input>
+                        {!marriageProofDOCval && <span>Please upload a file</span>}
+                    </div>
+                    <div>
+                        <span>Birth proof</span>
+                        <input type='file' onChange={e => setBirthProofDOC(e.target.files[0])} accept="image/*"></input>
+                        {!birthProofDOCval && <span>Please upload a file</span>}
+                    </div>
+                </div>
+            }
+            {
+                addressProofDOCval && marriageProofDOCval && birthProofDOCval &&
+                <div>
+                    <button onClick={submit_birth_form}>SUBMIT</button>
+                </div>
+            }
+        </div >
     )
 }
 
-export default BirthForm
+export default BirthForm;

@@ -68,3 +68,8 @@ input::-webkit-inner-spin-button {
   height: 100vh;
   margin: 4% 5% 4% 5%;
 }
+/*  ? Birth Form */
+.dashboard-birth-form-container {
+  overflow-y: auto;
+  height: 86vh;
+}
