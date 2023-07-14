@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { AUTH_ACTIONS } from '../../redux-store/slices/auth-slice';
@@ -10,8 +10,14 @@ const ONLY_NUMBER_VALIDATOR = new RegExp('^[0-9]+$');
 const PASSWORD_VALIDATOR = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,12}$/;
 
 function LoginContainer({ API }) {
-
     const navigate = useNavigate();
+    const token = useSelector(state => state.auth.token);
+    useEffect(() => {
+        if (token) {
+            navigate("/dashboard");
+        }
+        // eslint-disable-next-line
+    }, []);
     const dispatch = useDispatch();
     const [aadharNumber, setAadharNumber] = useState("");
     const [aadharNumberVal, setAadharNumberVal] = useState("");

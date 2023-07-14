@@ -3,8 +3,10 @@ import DATEPCIKER from 'react-date-picker';
 import 'react-date-picker/dist/DatePicker.css';
 import 'react-calendar/dist/Calendar.css';
 import axios from 'axios';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
+import { CITIZEN_ACTIONS } from '../../../redux-store/slices/citizen-slice';
 
 const ONLY_NUMBER_VALIDATOR = new RegExp('^[0-9]+$');
 const ONLY_ALPHA_VALIDATOR = /^[A-Z]+$/i;
@@ -78,6 +80,14 @@ const fatherReducer = parentReducer;
 
 function BirthForm({ API }) {
     const ME = useSelector(state => state.citizen.citizen);
+    const token = useSelector(state => state.auth.token);
+    const NAVIGATE = useNavigate();
+    const dispatch = useDispatch();
+    useEffect(() => {
+        if (!token) {
+            NAVIGATE("/login");
+        }
+    }, [NAVIGATE, token]);
     // Child date of birth
     const [childDOB, setChildDOB] = useState(new Date());
     const [childDOBVal, setChildDOBVal] = useState(false);
@@ -129,8 +139,8 @@ function BirthForm({ API }) {
         }
     }, [last]);
     // Child weight
-    const [weight, setWeight] = useState(null);
-    const [weightVal, setWeightVal] = useState(0.0);
+    const [weight, setWeight] = useState(0);
+    const [weightVal, setWeightVal] = useState(false);
     useEffect(() => {
         if (weight <= 1.5 || weight >= 7.0) {
             setWeightVal(false)
@@ -200,7 +210,7 @@ function BirthForm({ API }) {
         }
     }, [motherLiteracy]);
 
-    const [motherAgeBirth, setMotherAgeBirth] = useState(null);
+    const [motherAgeBirth, setMotherAgeBirth] = useState(0);
     const [motherAgeBirthVal, setMotherAgeBirthVal] = useState(false);
     useEffect(() => {
         if (motherAgeBirth <= 10 || motherAgeBirth >= 50) {
@@ -303,7 +313,7 @@ function BirthForm({ API }) {
         }
     }, [deliveryType]);
 
-    const [pregDuration, setPregDuration] = useState(null);
+    const [pregDuration, setPregDuration] = useState(0);
     const [pregDurationVal, setPregDurationVal] = useState(null);
     useEffect(() => {
         if (pregDuration <= 28 || pregDuration >= 40) {
@@ -318,20 +328,49 @@ function BirthForm({ API }) {
     // 
     const [addressProofDOC, setAddressProofDOC] = useState(null);
     const [addressProofDOCval, setAddressProofDOCval] = useState(false);
+    const [addBase64, setAddBase64] = useState("");
     useEffect(() => {
-        setAddressProofDOCval(image_validation(addressProofDOC));
+        if (image_validation(addressProofDOC)) {
+            setAddressProofDOCval(true);
+            const reader = new FileReader();
+            reader.readAsDataURL(addressProofDOC);
+            reader.onloadend = () => { setAddBase64(reader.result) };
+        } else {
+            setAddressProofDOCval(false);
+        }
     }, [addressProofDOC]);
 
     const [marriageProofDOC, setMarriageProofDOC] = useState(null);
     const [marriageProofDOCval, setMarriageProofDOCval] = useState(false);
+    const [marriageBase64, setMarriageBase64] = useState("");
     useEffect(() => {
-        setMarriageProofDOCval(image_validation(marriageProofDOC));
+        if (image_validation(marriageProofDOC)) {
+            setMarriageProofDOCval(true);
+            const reader = new FileReader();
+            reader.readAsDataURL(marriageProofDOC);
+            reader.onloadend = () => { setMarriageBase64(reader.result) };
+        } else {
+            setMarriageProofDOCval(false);
+        }
+
     }, [marriageProofDOC]);
 
     const [birthProofDOC, setBirthProofDOC] = useState(null);
     const [birthProofDOCval, setBirthProofDOCval] = useState(false);
+    const [birthBase64, setBirthBase64] = useState("");
+
+    const [submitted, setSubmitted] = useState(false);
+    const [submitAnswer, setSubmitAnswer] = useState({ err: false, msg: "" });
     useEffect(() => {
-        setBirthProofDOCval(image_validation(birthProofDOC));
+        if (image_validation(birthProofDOC)) {
+            setBirthProofDOCval(true);
+            const reader = new FileReader();
+            reader.readAsDataURL(birthProofDOC);
+            reader.onloadend = () => { setBirthBase64(reader.result) };
+        } else {
+            setBirthProofDOCval(false);
+        }
+
     }, [birthProofDOC]);
 
     // Functions
@@ -375,39 +414,50 @@ function BirthForm({ API }) {
         if (!confirm) {
             return
         }
-        let birthCertificateFormData = new FormData();
-        birthCertificateFormData.append("childBirthDate", childDOB);
-        birthCertificateFormData.append("childGender", childGender);
-        birthCertificateFormData.append("childFirstName", first);
-        birthCertificateFormData.append("childMiddleName", middle);
-        birthCertificateFormData.append("childLastName", last);
-        birthCertificateFormData.append("childWeight", weight);
-        birthCertificateFormData.append("placeOfBirth", placeOfBirth);
+        let birthCertificateFormData = {};
+        birthCertificateFormData.childBirthDate = childDOB;
+        birthCertificateFormData.childGender = childGender;
+        birthCertificateFormData.childFirstName = first;
+        birthCertificateFormData.childMiddleName = middle;
+        birthCertificateFormData.childLastName = last;
+        birthCertificateFormData.childWeight = weight;
+        birthCertificateFormData.placeOfBirth = placeOfBirth;
 
-        birthCertificateFormData.append("motherAadhar", motherAadharData.aadharNumber);
-        birthCertificateFormData.append("motherReligion", motherReligion);
-        birthCertificateFormData.append("motherLiteracy", motherLiteracy);
-        birthCertificateFormData.append("motherAgeAtBirth", motherAgeBirth);
-        birthCertificateFormData.append("motherOccupation", motherOccupation);
+        birthCertificateFormData.motherAadhar = motherAadharData.aadharNumber;
+        birthCertificateFormData.motherReligion = motherReligion;
+        birthCertificateFormData.motherLiteracy = motherLiteracy;
+        birthCertificateFormData.motherAgeAtBirth = motherAgeBirth;
+        birthCertificateFormData.motherOccupation = motherOccupation;
 
-        birthCertificateFormData.append("fatherAadhar", fatherAadharData.aadharNumber);
-        birthCertificateFormData.append("fatherReligion", fatherReligion);
-        birthCertificateFormData.append("fatherLiteracy", fatherLiteracy);
-        birthCertificateFormData.append("fatherOccupation", fatherOccupation);
+        birthCertificateFormData.fatherAadhar = fatherAadharData.aadharNumber;
+        birthCertificateFormData.fatherReligion = fatherReligion;
+        birthCertificateFormData.fatherLiteracy = fatherLiteracy;
+        birthCertificateFormData.fatherOccupation = fatherOccupation;
 
-        birthCertificateFormData.append("postDeliveryTreatment", postDelivery);
-        birthCertificateFormData.append("deliveryType", deliveryType);
-        birthCertificateFormData.append("pregnancyDurationWeeks", pregDuration);
+        birthCertificateFormData.postDeliveryTreatment = postDelivery;
+        birthCertificateFormData.deliveryType = deliveryType;
+        birthCertificateFormData.pregnancyDurationWeeks = pregDuration;
 
-        birthCertificateFormData.append("permanentAddProofDOC", addressProofDOC);
-        birthCertificateFormData.append("marraigeCertificateDOC", marriageProofDOC);
-        birthCertificateFormData.append("proofOfBirthDOC", birthProofDOC);
+        birthCertificateFormData.permanentAddProofDOC = addBase64;
+        birthCertificateFormData.marriageCertificateDOC = marriageBase64;
+        birthCertificateFormData.proofOfBirthDOC = birthBase64;
 
-        birthCertificateFormData.append("appliedBy", ME._id);
+        birthCertificateFormData.appliedBy = ME._id;
 
-        for (const pair of birthCertificateFormData.entries()) {
-            console.log(`${pair[0]}, ${pair[1]}`);
-        }
+        axios.post(`${API}/citizen/submit-birth-form`, birthCertificateFormData)
+            .then(result => {
+                const DATA = result.data;
+                if (DATA.err) {
+                    setSubmitAnswer({ err: DATA.err, msg: DATA.msg });
+                } else {
+                    dispatch(CITIZEN_ACTIONS.updateAppliedFor({ appliedFor: DATA.data.appliedFor }));
+                    setSubmitted(true);
+                    setSubmitAnswer({ err: DATA.err, msg: DATA.msg });
+                    setTimeout(() => {
+                        NAVIGATE(`/dashboard/applied/book-slot/${placeOfBirth}/${0}`);
+                    }, 2000);
+                }
+            });
     }
     return (
         <div className='dashboard-birth-form-container'>
@@ -612,6 +662,11 @@ function BirthForm({ API }) {
                 addressProofDOCval && marriageProofDOCval && birthProofDOCval &&
                 <div>
                     <button onClick={submit_birth_form}>SUBMIT</button>
+                </div>
+            }
+            {submitted &&
+                <div>
+                    <span>{submitAnswer.msg}</span>
                 </div>
             }
         </div >

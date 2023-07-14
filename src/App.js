@@ -15,7 +15,7 @@ import LogoutContainer from './components/dashboard/LogoutContainer';
 import BirthForm from './components/dashboard/forms/BirthForm';
 import MarriageForm from './components/dashboard/forms/MarriageForm';
 import DeathForm from './components/dashboard/forms/DeathForm';
-
+import BookSlot from "./components/dashboard/forms/BookSlot";
 // Importing Pages
 import HomePage from './pages/Homepage';
 import Dashboard from './pages/Dashboard';
@@ -46,7 +46,7 @@ const ROUTER = createBrowserRouter(
         { path: 'forms/birth-form', element: <BirthForm API={API} /> },
         { path: 'forms/marriage-form', element: <MarriageForm API={API} /> },
         { path: 'forms/death-form', element: <DeathForm API={API} /> },
-
+        { path: 'applied/book-slot/:district/:service', element: <BookSlot API={API} /> }
       ]
     }
   ]

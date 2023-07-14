@@ -1,7 +1,15 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useEffect } from 'react'
+import { useSelector } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom'
 
 function ServicesContainer() {
+    const NAVIGATE = useNavigate();
+    const token = useSelector(state => state.auth.token);
+    useEffect(() => {
+        if (!token) {
+            NAVIGATE("/login");
+        }
+    }, [NAVIGATE, token]);
     return (
         <div className='dashboard-services-container'>
             {/* ? Birth Certificate details */}

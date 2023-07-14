@@ -9,6 +9,9 @@ const CITIZEN_SLICE = createSlice({
         },
         removeCitizen(state) {
             state.citizen = null;
+        },
+        updateAppliedFor(state, action) {
+            state.citizen.appliedFor.push(action.payload.appliedFor)
         }
     }
 });

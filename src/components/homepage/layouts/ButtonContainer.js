@@ -51,9 +51,9 @@ const AuthorityVariant = {
 
 
 function ButtonContainer() {
-    const [infoActive, changeInfoActive] = useState(false);
-    const [registerActive, changeRegisterActive] = useState(true);
-    const [loginActive, changeLoginActive] = useState(true);
+    const [infoActive, changeInfoActive] = useState(window.location.pathname === '/' ? false : true);
+    const [registerActive, changeRegisterActive] = useState(window.location.pathname === '/register' ? false : true);
+    const [loginActive, changeLoginActive] = useState(window.location.pathname === '/login' ? false : true);
     const changeHandler = (button) => {
         if (button === 1) {
             changeInfoActive(false)
