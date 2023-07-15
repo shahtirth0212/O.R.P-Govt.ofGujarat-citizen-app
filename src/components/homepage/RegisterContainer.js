@@ -34,7 +34,7 @@ const PASSWORD_VALIDATOR = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,12
 function RegisterContainer({ API }) {
     const NAVIGATE = useNavigate();
     const token = useSelector(state => state.auth.token);
-    if (!token) {
+    if (token) {
         NAVIGATE("/dashboard");
     }
     const [sending, setSending] = useState(false);

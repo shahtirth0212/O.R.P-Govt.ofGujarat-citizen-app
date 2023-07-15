@@ -9,7 +9,6 @@ function LeftNavBar() {
             <motion.div className='dashboard-leftnavbar-container'>
                 <Link to="/dashboard"><button className='dashboard-nav-button'>Services</button></Link>
                 <Link to="applied"><button className='dashboard-nav-button'>Applied</button></Link>
-                <Link to="drafts"><button className='dashboard-nav-button'>Drafts</button></Link>
                 <Link to="update-profile"><button className='dashboard-nav-button'>Update Profile</button></Link>
                 <Link to="logout"><button className='dashboard-nav-button'>Logout</button></Link>
             </motion.div>

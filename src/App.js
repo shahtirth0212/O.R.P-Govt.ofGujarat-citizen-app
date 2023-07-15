@@ -9,7 +9,6 @@ import RegisterContainer from './components/homepage/RegisterContainer';
 // Importing Dashboard components
 import ServicesContainer from './components/dashboard/ServicesContainer';
 import AppliedContainer from './components/dashboard/AppliedContainer';
-import DraftsContainer from './components/dashboard/DraftsContainer';
 import UpdateContainer from './components/dashboard/UpdateContainer';
 import LogoutContainer from './components/dashboard/LogoutContainer';
 import BirthForm from './components/dashboard/forms/BirthForm';
@@ -39,14 +38,13 @@ const ROUTER = createBrowserRouter(
       children: [
         { index: true, element: <ServicesContainer API={API} /> },
         { path: 'applied', element: <AppliedContainer API={API} /> },
-        { path: 'drafts', element: <DraftsContainer API={API} /> },
         { path: 'update-profile', element: <UpdateContainer API={API} /> },
         { path: 'logout', element: <LogoutContainer API={API} /> },
 
         { path: 'forms/birth-form', element: <BirthForm API={API} /> },
         { path: 'forms/marriage-form', element: <MarriageForm API={API} /> },
         { path: 'forms/death-form', element: <DeathForm API={API} /> },
-        { path: 'applied/book-slot/:district/:service', element: <BookSlot API={API} /> }
+        { path: 'applied/book-slot/:district/:service/:appliedId', element: <BookSlot API={API} /> }
       ]
     }
   ]

@@ -1,5 +1,5 @@
 import React, { useEffect, useReducer, useState } from 'react'
-import DATEPCIKER from 'react-date-picker';
+import DATEPICKER from 'react-date-picker';
 import 'react-date-picker/dist/DatePicker.css';
 import 'react-calendar/dist/Calendar.css';
 import axios from 'axios';
@@ -454,7 +454,7 @@ function BirthForm({ API }) {
                     setSubmitted(true);
                     setSubmitAnswer({ err: DATA.err, msg: DATA.msg });
                     setTimeout(() => {
-                        NAVIGATE(`/dashboard/applied/book-slot/${placeOfBirth}/${0}`);
+                        NAVIGATE(`/dashboard/applied/book-slot/${placeOfBirth}/${0}/${DATA.data.appliedFor}`);
                     }, 2000);
                 }
             });
@@ -466,7 +466,7 @@ function BirthForm({ API }) {
             <div className='birth-form-child-section'>
                 <h5>Child details</h5>
                 <span>Date of Birth</span>
-                <DATEPCIKER onChange={setChildDOB} format='MM-dd-yyyy' maxDate={new Date()} value={childDOB} />
+                <DATEPICKER onChange={setChildDOB} format='MM-dd-yyyy' maxDate={new Date()} value={childDOB} />
                 {!childDOBVal && <span>Please enter a valid date</span>}
 
                 <select defaultValue={-1} onChange={e => setChildGender(e.target.value)}>
@@ -645,16 +645,19 @@ function BirthForm({ API }) {
                         <span>Permanent address proof</span>
                         <input type='file' onChange={e => setAddressProofDOC(e.target.files[0])} accept="image/*"></input>
                         {!addressProofDOCval && <span>Please upload a file</span>}
+                        {addressProofDOCval && < img style={{ width: "10vw", height: "20vh" }} src={addBase64} alt='img' />}
                     </div>
                     <div>
                         <span>Marriage Certificate</span>
                         <input type='file' onChange={e => setMarriageProofDOC(e.target.files[0])} accept="image/*"></input>
                         {!marriageProofDOCval && <span>Please upload a file</span>}
+                        {marriageProofDOCval && <img style={{ width: "10vw", height: "20vh" }} src={marriageBase64} alt='img' />}
                     </div>
                     <div>
                         <span>Birth proof</span>
                         <input type='file' onChange={e => setBirthProofDOC(e.target.files[0])} accept="image/*"></input>
                         {!birthProofDOCval && <span>Please upload a file</span>}
+                        {birthProofDOCval && <img style={{ width: "10vw", height: "20vh" }} src={birthBase64} alt='img' />}
                     </div>
                 </div>
             }

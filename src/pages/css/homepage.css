@@ -3,14 +3,14 @@
 body {
   margin: 0px;
   overflow: hidden;
-  background-image: linear-gradient(
+  /* background-image: linear-gradient(
     to left top,
     #58595d,
     #46474b,
     #353639,
     #252628,
     #161718
-  );
+  ); */
 }
 .homepage-bg-video {
   position: absolute;

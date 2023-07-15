@@ -22,17 +22,48 @@ function AppliedContainer({ API }) {
         }
         //eslint-disable-next-line
     }, []);
+    const get_slot = async (applied) => {
+        const response = await axios.post(`${API}/citizen/get-district-certificate`, { district: applied.district, certificate: applied.certificateId })
+        const DATA = response.data;
+        if (DATA.err) {
+            alert(`${DATA.msg}`)
+        } else {
+            NAVIGATE(`book-slot/${DATA.data.district}/${DATA.data.service}/${applied._id}`);
+        }
+    }
     return (
         <div>
-            {appliedData.map(data => {
-                return (
-                    <div key={data.applied._id}>
-                        <h2>{data.applied.holders[0].firstName}</h2>
-                        <h3>verified: {data.applied.verified ? "yes" : "no"}</h3>
-                        <h3>{data.slot === null ? "Book a slot" : data.slot.date.toDateString()}</h3>
-                    </div>
-                )
-            })}
+            <table className="table">
+                <thead className="thead-dark">
+                    <tr>
+                        <th scope="col">No.</th>
+                        <th scope="col">Form</th>
+                        <th scope="col">Holder</th>
+                        <th scope="col">Slot booked (24h)</th>
+                        <th scope="col">Verified</th>
+                        <th scope="col">Get certificate</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {
+                        appliedData.map((data, i = 0) => {
+                            i++;
+                            console.log(data);
+                            return (
+                                <tr key={data.applied._id}>
+                                    <th scope="row">{i}</th>
+                                    <th scope="row">{data.form}</th>
+                                    <td>{data.applied.holders[0].firstName}</td>
+                                    <td>{data.slot === null ? <button onClick={e => get_slot(data.applied)}>Book a slot</button> : new Date(data.slot.date).toDateString() + "   " + data.hours}</td>
+                                    <td>{data.applied.verified ? "yes" : "no"}</td>
+                                    <td>{data.applied.issued ? <button>Email the certificate</button> : "In progress"}</td>
+                                </tr>
+
+                            )
+                        })}
+
+                </tbody>
+            </table>
         </div>
     )
 }
