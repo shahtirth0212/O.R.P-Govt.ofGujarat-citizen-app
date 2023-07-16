@@ -48,7 +48,6 @@ function AppliedContainer({ API }) {
                     {
                         appliedData.map((data, i = 0) => {
                             i++;
-                            console.log(data);
                             return (
                                 <tr key={data.applied._id}>
                                     <th scope="row">{i}</th>
