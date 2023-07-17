@@ -79,3 +79,7 @@ input::-webkit-inner-spin-button {
   overflow-y: auto;
   height: 86vh;
 }
+.dashboard-death-form-container {
+  overflow-y: auto;
+  height: 86vh;
+}

@@ -69,7 +69,7 @@ function LoginContainer({ API }) {
                         aadharNumber: DATA.data.aadharNumber,
                         appliedFor: DATA.data.appliedFor,
                         drafts: DATA.data.drafts,
-                        _id: DATA.data._id
+                        _id: DATA.data._id,
                     }
                     dispatch(AUTH_ACTIONS.setToken({ token: DATA.data.token }));
                     dispatch(CITIZEN_ACTIONS.setCitizen({ citizen }))

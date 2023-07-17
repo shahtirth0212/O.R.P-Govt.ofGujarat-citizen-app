@@ -454,6 +454,7 @@ function BirthForm({ API }) {
                     setSubmitted(true);
                     setSubmitAnswer({ err: DATA.err, msg: DATA.msg });
                     setTimeout(() => {
+                        dispatch(CITIZEN_ACTIONS.setFilling({ filling: true }));
                         NAVIGATE(`/dashboard/applied/book-slot/${placeOfBirth}/${0}/${DATA.data.appliedFor}`);
                     }, 2000);
                 }

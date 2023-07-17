@@ -1,10 +1,12 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { CITIZEN_ACTIONS } from '../../redux-store/slices/citizen-slice';
 
 function AppliedContainer({ API }) {
     const ME = useSelector(state => state.citizen.citizen);
+    const filling = useSelector(state => state.citizen.filling);
     const NAVIGATE = useNavigate();
     const token = useSelector(state => state.auth.token);
 
@@ -22,13 +24,17 @@ function AppliedContainer({ API }) {
         }
         //eslint-disable-next-line
     }, []);
+    const dispatch = useDispatch();
+
     const get_slot = async (applied) => {
         const response = await axios.post(`${API}/citizen/get-district-certificate`, { district: applied.district, certificate: applied.certificateId })
         const DATA = response.data;
         if (DATA.err) {
             alert(`${DATA.msg}`)
         } else {
+            dispatch(CITIZEN_ACTIONS.setFilling({ filling: true }));
             NAVIGATE(`book-slot/${DATA.data.district}/${DATA.data.service}/${applied._id}`);
+
         }
     }
     return (
@@ -52,7 +58,7 @@ function AppliedContainer({ API }) {
                                 <tr key={data.applied._id}>
                                     <th scope="row">{i}</th>
                                     <th scope="row">{data.form}</th>
-                                    <td>{data.applied.holders[0].firstName}</td>
+                                    <td>{data.applied.holders[0].firstName} {data.applied.holders[1] && data.applied.holders[1].name}</td>
                                     <td>{data.slot === null ? <button onClick={e => get_slot(data.applied)}>Book a slot</button> : new Date(data.slot.date).toDateString() + "   " + data.hours}</td>
                                     <td>{data.applied.verified ? "yes" : "no"}</td>
                                     <td>{data.applied.issued ? <button>Email the certificate</button> : "In progress"}</td>

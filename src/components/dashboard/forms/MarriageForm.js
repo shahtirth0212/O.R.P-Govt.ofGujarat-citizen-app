@@ -1,8 +1,9 @@
 import axios from "axios";
 import React, { useEffect, useReducer, useState } from "react";
 import DatePicker from "react-date-picker";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { CITIZEN_ACTIONS } from "../../../redux-store/slices/citizen-slice";
 
 const ONLY_NUMBER_VALIDATOR = new RegExp("^[0-9]+$");
 const ONLY_ALPHA_VALIDATOR = /^[A-Z]+$/i;
@@ -60,7 +61,7 @@ const image_validation = (file) => {
     }
 };
 const name_validation = (name) => {
-    if (!ONLY_ALPHA_VALIDATOR.test(name) || name.trim().length < 3 || name.trim().length > 15) {
+    if (!ONLY_ALPHA_VALIDATOR.test(name.trim()) || name.trim().length < 3 || name.trim().length > 15) {
         return false;
     } else {
         return true;
@@ -207,6 +208,8 @@ function MarriageForm({ API }) {
         }
     }, [NAVIGATE, token]);
 
+    const ME = useSelector(state => state.citizen.citizen);
+    const dispatch = useDispatch();
     // Date of Marriage
     const [dateOfMarriage, setDateOfMarriage] = useState(new Date());
     // Place of Marriage
@@ -685,6 +688,9 @@ function MarriageForm({ API }) {
             setMarriagePhoto2Val(false);
         }
     }, [marriagePhoto2]);
+    const [submitted, setSubmitted] = useState(false);
+    const [submitAnswer, setSubmitAnswer] = useState({ err: false, msg: "" });
+
     // Functions
     const verify_husband_aadhar = () => {
         axios
@@ -744,20 +750,23 @@ function MarriageForm({ API }) {
             const form = {
                 dateOfMarriage,
                 placeOfMarriage,
+                district: husbandAadharData.district,
 
                 husbandAadhar: husbandAadhar.aadharNumber,
+                husbandName: `${husbandAadharData.firstName} ${husbandAadharData.middleName} ${husbandAadharData.lastName}`,
                 husbandReligion: husbandDetails.religion,
                 husbandStatus: husbandDetails.status,
                 husbandBirth: husbandBirthBASE,
                 husbandSign: HusbandSignBASE,
 
                 wifeAadhar: wifeAadhar.aadharNumber,
+                wifeName: `${wifeAadharData.firstName} ${wifeAadharData.middleName} ${wifeAadharData.lastName}`,
                 wifeReligion: wifeDetails.religion,
                 wifeStatus: wifeDetails.status,
                 wifeBirth: wifeBirthBASE,
                 wifeSign: wifeSignBASE,
 
-                witness1FullName: ` ${witness1FirstName} ${witness1MiddleName} ${witness1LastName}`,
+                witness1FullName: `${witness1FirstName} ${witness1MiddleName} ${witness1LastName}`,
                 witness1Address: `${witness1Address.line1} ${witness1Address.district}`,
                 witness1ID: witness1_IDProofBASE,
                 witness1Sign: witness1SignBASE,
@@ -770,12 +779,29 @@ function MarriageForm({ API }) {
                 priestSign: priestSignBASE,
                 marriagePhoto1: marriagePhoto1BASE,
                 marriagePhoto2: marriagePhoto2BASE,
+
+                appliedBy: ME._id
             }
-            console.log(form);
+            axios.post(`${API}/citizen/submit-marriage-form`, form)
+                .then(result => {
+                    const DATA = result.data;
+                    if (DATA.err) {
+                        setSubmitAnswer({ err: DATA.err, msg: DATA.msg });
+                    } else {
+                        dispatch(CITIZEN_ACTIONS.updateAppliedFor({ appliedFor: DATA.data.appliedFor }));
+                        setSubmitted(true);
+                        setSubmitAnswer({ err: DATA.err, msg: DATA.msg });
+                        setTimeout(() => {
+                            dispatch(CITIZEN_ACTIONS.setFilling({ filling: true }));
+                            NAVIGATE(`/dashboard/applied/book-slot/${husbandAadharData.district}/${1}/${DATA.data.appliedFor}`);
+                        }, 2000);
+                    }
+                });
         }
     }
     return (
         <div className="dashboard-marriage-form-container">
+            <h3>Registration for Marriage Certificate</h3>
             {/* Basic Details  */}
             <div className="marriage-form-basic-section">
                 <h5>Basic details</h5>
@@ -1368,6 +1394,11 @@ function MarriageForm({ API }) {
                 priestSignVal && marriagePhoto1Val && marriagePhoto2Val &&
                 <div>
                     <button onClick={submit_marriage_form}>Submit</button>
+                </div>
+            }
+            {submitted &&
+                <div>
+                    <span>{submitAnswer.msg}</span>
                 </div>
             }
         </div>
