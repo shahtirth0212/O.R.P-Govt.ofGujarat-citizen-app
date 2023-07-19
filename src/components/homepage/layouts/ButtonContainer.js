@@ -98,7 +98,7 @@ function ButtonContainer() {
                 >Login
                 </motion.button>
             </Link>
-            <Link to='/'>
+            <Link to='http://localhost:3001/'>
                 <motion.button
                     variants={AuthorityVariant}
                     initial="hidden"

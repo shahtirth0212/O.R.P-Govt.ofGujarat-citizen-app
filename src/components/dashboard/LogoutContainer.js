@@ -12,11 +12,11 @@ function LogoutContainer() {
             NAVIGATE("/login");
         }
     }, [NAVIGATE, token]);
-    const [value, onChange] = React.useState('10:00');
+    const [value, onChange] = React.useState('00:00');
     return (
         <div>
-            <TimePicker onChange={onChange} value={value} />
-            <h1 style={{ color: "white" }}>{value}</h1>
+            <TimePicker disableClock={true} onChange={onChange} value={value} />
+            <h1 style={{ color: "black" }}>{value}</h1>
         </div>
     )
 }
