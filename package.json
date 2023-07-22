@@ -18,6 +18,8 @@
     "react-scripts": "5.0.1",
     "react-time-picker": "^6.2.0",
     "react-transition-group": "^4.4.5",
+    "simple-peer": "^9.11.1",
+    "socket.io-client": "^4.7.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

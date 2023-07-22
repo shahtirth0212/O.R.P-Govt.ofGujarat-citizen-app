@@ -3,14 +3,16 @@
 body {
   margin: 0px;
   overflow: hidden;
-  /* background-image: linear-gradient(
+  background-image: linear-gradient(
     to left top,
-    #58595d,
-    #46474b,
-    #353639,
-    #252628,
-    #161718
-  ); */
+    #c0caf3,
+    #6476bb,
+    #27408b,
+    #6d48b1,
+    #ccaeff
+  );
+  filter: blur(0.8);
+  /* backdrop-filter: blur(4px); */
 }
 .homepage-bg-video {
   position: absolute;
