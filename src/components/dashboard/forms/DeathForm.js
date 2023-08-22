@@ -8,42 +8,42 @@ import DatePicker from 'react-date-picker';
 import '../../../pages/css/dashboard.css';
 
 const ONLY_NUMBER_VALIDATOR = new RegExp("^[0-9]+$");
-const ONLY_ALPHA_VALIDATOR = /^[A-Z]+$/i;
-const DISTRICTS = [
-    "Ahmedabad",
-    "Amreli",
-    "Anand",
-    "Aravalli",
-    "Banaskantha",
-    "Bharuch",
-    "Bhavnagar",
-    "Botad",
-    "Chhotaudipur",
-    "Dahod",
-    "Dang",
-    "Devbhumi Dwarka",
-    "Gandhinagar",
-    "Gir Somnath",
-    "Jamnagar",
-    "Junagadh",
-    "Kheda",
-    "Kutch",
-    "Mahisagar",
-    "Mehsana",
-    "Morbi",
-    "Narmada",
-    "Navsari",
-    "Panchmahal",
-    "Patan",
-    "Porbandar",
-    "Rajkot",
-    "Sabarkantha",
-    "Surat",
-    "Surendranagar",
-    "Tapi",
-    "Valsad",
-    "Vadodara",
-];
+// const ONLY_ALPHA_VALIDATOR = /^[A-Z]+$/i;
+// const DISTRICTS = [
+//     "Ahmedabad",
+//     "Amreli",
+//     "Anand",
+//     "Aravalli",
+//     "Banaskantha",
+//     "Bharuch",
+//     "Bhavnagar",
+//     "Botad",
+//     "Chhotaudipur",
+//     "Dahod",
+//     "Dang",
+//     "Devbhumi Dwarka",
+//     "Gandhinagar",
+//     "Gir Somnath",
+//     "Jamnagar",
+//     "Junagadh",
+//     "Kheda",
+//     "Kutch",
+//     "Mahisagar",
+//     "Mehsana",
+//     "Morbi",
+//     "Narmada",
+//     "Navsari",
+//     "Panchmahal",
+//     "Patan",
+//     "Porbandar",
+//     "Rajkot",
+//     "Sabarkantha",
+//     "Surat",
+//     "Surendranagar",
+//     "Tapi",
+//     "Valsad",
+//     "Vadodara",
+// ];
 const DEATH_TYPE = ["Natural", "Medical conditions", "Other unnatural conditions"];
 const IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png"];
 const name_validation = (name) => {
@@ -353,87 +353,111 @@ function DeathForm({ API }) {
                         dispatch(CITIZEN_ACTIONS.updateAppliedFor({ appliedFor: DATA.data.appliedFor }));
                         setSubmitted(true);
                         setSubmitAnswer({ err: DATA.err, msg: DATA.msg });
-                        setTimeout(() => {
-                            dispatch(CITIZEN_ACTIONS.setFilling({ filling: true }));
-                            NAVIGATE(`/dashboard/applied/book-slot/${personAadharData.district}/${2}/${DATA.data.appliedFor}`);
-                        }, 2000);
+                        dispatch(CITIZEN_ACTIONS.setFilling({ filling: true }));
+                        NAVIGATE(`/dashboard/applied/book-slot/${personAadharData.district}/${2}/${DATA.data.appliedFor}`);
                     }
                 });
         }
     }
     return (
-        <div className="dashboard-death-form-container">
-            <h3>Registration for Death Certificate</h3>
+        <div style={{ padding: "2vw", backgroundColor: "#ffffff87", borderRadius: "8px", "backdrop-filter": "blur(3px)" }} className="dashboard-death-form-container">
+            <h3 style={{ fontWeight: "bolder", paddingBottom: "1vh" }}>Registration for Death Certificate</h3>
             {/* Basic Details  */}
-            <div className="death-form-basic-section">
-                <h5>Basic details</h5>
-                <span>Date of Death</span>
-                <DatePicker
-                    onChange={setDateOfDeath}
-                    format="MM-dd-yyyy"
-                    maxDate={new Date()}
-                    value={dateOfDeath}
-                />
-                <span>
-                    Note: Death certificate will be issued from the address mentioned
-                    in deceased person's aadhar card
-                </span>
-                <input
-                    type="text"
-                    onChange={(e) => setPlaceOfDeath(e.target.value)}
-                    placeholder="Place Of Death"
-                ></input>
-                {!placeOfDeathVal && <span>Max 20 characters allowed</span>}
-                <input
-                    type="text"
-                    onChange={(e) => setReason(e.target.value)}
-                    placeholder="Reason Of Death"
-                ></input>
-                {!reasonVal && <span>Reason must be more than 3 letters</span>}
-                <select
-                    defaultValue={-1}
-                    onChange={(e) =>
-                        setType(e.target.value)
-                    }
-                >
-                    <option disabled value={-1}>
-                        Type of Death
-                    </option>
-                    {DEATH_TYPE.map((type) => (
-                        <option key={type} value={type}>
-                            {type}
-                        </option>
-                    ))}
-                </select>
+            <div style={{ "border": "1px solid black ", padding: "1vw", borderRadius: "10px" }} className="death-form-basic-section">
+                <h5 style={{ fontWeight: "bold", paddingBottom: "1vh", letterSpacing: "1px" }}>⇛ Basic details</h5>
+                <div style={{ display: "flex", gap: "4vw", marginBottom: "1vh" }}>
+                    <div>
+                        <span>Date of Death</span>
+                        <DatePicker
+                            onChange={setDateOfDeath}
+                            format="MM-dd-yyyy"
+                            maxDate={new Date()}
+                            value={dateOfDeath}
+                        />
+                    </div>
+                    <div>
+                        <span>
+                            Note: Death certificate will be issued from the address mentioned
+                            in deceased person's aadhar card
+                        </span>
+                        <input
+                            className={placeOfDeathVal ? 'normal-tb' : 'red-tb'}
+                            type="text"
+                            onChange={(e) => setPlaceOfDeath(e.target.value)}
+                            placeholder="Place Of Death"
+                        ></input>
+                    </div>
+                    <div>
+
+                        {!placeOfDeathVal && <span>Max 20 characters allowed</span>}
+                        <input className={reasonVal ? 'normal-tb' : 'red-tb'}
+                            type="text"
+                            onChange={(e) => setReason(e.target.value)}
+                            placeholder="Reason Of Death"
+                        ></input>
+                        {!reasonVal && <span>Reason must be more than 3 letters</span>}
+                    </div>
+                    <div>
+
+                        <select
+                            className='normal-tb'
+                            defaultValue={-1}
+                            onChange={(e) =>
+                                setType(e.target.value)
+                            }
+                        >
+                            <option className='normal-tb' disabled value={-1}>
+                                Type of Death
+                            </option>
+                            {DEATH_TYPE.map((type) => (
+                                <option className='normal-tb' key={type} value={type}>
+                                    {type}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                </div>
+                <hr></hr>
                 {/* Person Details  */}
                 {placeOfDeathVal && reasonVal && typeVal && (
                     <div className="death-form-person-section">
-                        <h5>Deceased Person Details</h5>
-                        <input
-                            disabled={personAadhar.aadharVerification.verified}
-                            type="text"
-                            placeholder="Person's aadhar number"
-                            onChange={(e) => {
-                                personAadharDispatch({
-                                    type: "setAadhar",
-                                    aadharNumber: e.target.value,
-                                });
-                                personAadharDispatch({ type: "setAadharVal" });
-                            }}
-                        ></input>
-                        {personAadhar.aadharNumberVal &&
-                            !personAadhar.aadharVerification.verified && (
-                                <button onClick={verify_person_aadhar}>Verify</button>
+                        <h5 style={{ fontWeight: "bold", paddingBottom: "1vh", letterSpacing: "1px" }}>⇛ Deceased Person Details</h5>
+                        <div>
+
+                            <input className={personAadhar.aadharNumberVal ? 'normal-tb' : 'red-tb'}
+                                disabled={personAadhar.aadharVerification.verified}
+                                type="text"
+                                placeholder="Person's aadhar number"
+                                onChange={(e) => {
+                                    personAadharDispatch({
+                                        type: "setAadhar",
+                                        aadharNumber: e.target.value,
+                                    });
+                                    personAadharDispatch({ type: "setAadharVal" });
+                                }}
+                            ></input>
+                            {personAadhar.aadharNumberVal &&
+                                !personAadhar.aadharVerification.verified && (
+                                    <button style={{ width: "auto" }} className='blue' onClick={verify_person_aadhar}>Verify</button>
+                                )}
+                            {personAadhar.aadharVerification.verified !== null && (
+
+                                <span>   {personAadhar.aadharVerification.msg} </span>
+
                             )}
-                        {personAadhar.aadharOTP.sent !== null &&
-                            !personAadhar.aadharVerification.verified && (
-                                <span>{personAadhar.aadharOTP.msg}</span>
-                            )}
+                        </div>
+                        <div>
+
+                            {personAadhar.aadharOTP.sent !== null &&
+                                !personAadhar.aadharVerification.verified && (
+                                    <span>{personAadhar.aadharOTP.msg}</span>
+                                )}
+                        </div>
                         {personAadhar.aadharOTP.sent &&
                             !personAadhar.aadharVerification.verified && (
                                 <div>
                                     <span>{personAadhar.aadharOTP.msg}</span>
-                                    <input
+                                    <input className={personOTPVal ? 'normal-tb' : 'red-tb'}
                                         type="text"
                                         placeholder="OTP"
                                         onChange={(e) => setPersonOTP(e.target.value)}
@@ -441,13 +465,10 @@ function DeathForm({ API }) {
                                     {!personOTPVal && <span>Enter 4 digit OTP</span>}
                                 </div>
                             )}
-                        {personAadhar.aadharVerification.verified !== null && (
-                            <span>{personAadhar.aadharVerification.msg}</span>
-                        )}
                         {
                             personAadhar.aadharVerification.verified &&
                             <>
-                                <span>{personAadharData.firstName}{personAadharData.middleName}{personAadharData.lastName}</span>
+                                <span>{personAadharData.firstName} {personAadharData.middleName} {personAadharData.lastName}</span>
                             </>
                         }
                     </div>
@@ -457,106 +478,116 @@ function DeathForm({ API }) {
             {
                 personAadhar.aadharVerification.verified &&
                 placeOfDeathVal && reasonVal && typeVal &&
-                <div div className="death-form-filler-section">
-                    <h5>Form Filler Details</h5>
-                    <input
-                        disabled={fillerAadhar.aadharVerification.verified}
-                        type="text"
-                        placeholder="Form filler's aadhar number"
-                        onChange={(e) => {
-                            fillerAadharDispatch({
-                                type: "setAadhar",
-                                aadharNumber: e.target.value,
-                            });
-                            fillerAadharDispatch({ type: "setAadharVal" });
-                        }}
-                    ></input>
-                    {fillerAadhar.aadharNumberVal &&
-                        !fillerAadhar.aadharVerification.verified && (
-                            <button onClick={verify_filler_aadhar}>Verify</button>
-                        )}
-                    {fillerAadhar.aadharOTP.sent !== null &&
-                        !fillerAadhar.aadharVerification.verified && (
-                            <span>{fillerAadhar.aadharOTP.msg}</span>
-                        )}
-                    {fillerAadhar.aadharOTP.sent &&
-                        !fillerAadhar.aadharVerification.verified && (
-                            <div>
-                                <span>{fillerAadhar.aadharOTP.msg}</span>
-                                <input
-                                    type="text"
-                                    placeholder="OTP"
-                                    onChange={(e) => setFillerOTP(e.target.value)}
-                                ></input>
-                                {!fillerOTPVal && <span>Enter 4 digit OTP</span>}
-                            </div>
-                        )}
-                    {fillerAadhar.aadharVerification.verified !== null && (
-                        <span>{fillerAadhar.aadharVerification.msg}</span>
-                    )}
-                    {
-                        fillerAadhar.aadharVerification.verified &&
-                        <>
-                            <span>{fillerAadharData.firstName}{fillerAadharData.middleName}{fillerAadharData.lastName}</span>
-                        </>
-                    }
-                    {
-                        fillerAadhar.aadharVerification.verified &&
-                        (<input
+                <div style={{ "border": "1px solid black ", padding: "1vw", marginTop: "1vw", borderRadius: "10px" }} className="death-form-filler-section">
+                    <h5 style={{ fontWeight: "bold", paddingBottom: "1vh", letterSpacing: "1px" }}>⇛ Form Filler Details</h5>
+                    <div style={{ display: "flex", gap: "1vw", marginBottom: "1vh" }}>
+                        <input className={fillerAadhar.aadharNumberVal ? 'normal-tb' : 'red-tb'}
+                            disabled={fillerAadhar.aadharVerification.verified}
                             type="text"
-                            placeholder="Form filler's relation with deceased person"
+                            placeholder="Form filler's aadhar number"
                             onChange={(e) => {
-                                setRelation(e.target.value)
+                                fillerAadharDispatch({
+                                    type: "setAadhar",
+                                    aadharNumber: e.target.value,
+                                });
+                                fillerAadharDispatch({ type: "setAadharVal" });
                             }}
-                        ></input>)
+                        ></input>
+                        {fillerAadhar.aadharNumberVal &&
+                            !fillerAadhar.aadharVerification.verified && (
+                                <button style={{ width: "auto" }} className='blue' onClick={verify_filler_aadhar}>Verify</button>
+                            )}
+                        {fillerAadhar.aadharOTP.sent !== null &&
+                            !fillerAadhar.aadharVerification.verified && (
+                                <span>{fillerAadhar.aadharOTP.msg}</span>
+                            )}
+                        {fillerAadhar.aadharOTP.sent &&
+                            !fillerAadhar.aadharVerification.verified && (
+                                <div>
+                                    <span>{fillerAadhar.aadharOTP.msg}</span>
+                                    <input className={fillerOTPVal ? 'normal-tb' : 'red-tb'}
+                                        type="text"
+                                        placeholder="OTP"
+                                        onChange={(e) => setFillerOTP(e.target.value)}
+                                    ></input>
+                                    {!fillerOTPVal && <span>Enter 4 digit OTP</span>}
+                                </div>
+                            )}
+                        {fillerAadhar.aadharVerification.verified !== null && (
+                            <span>{fillerAadhar.aadharVerification.msg}</span>
+                        )}
+                        {
+                            fillerAadhar.aadharVerification.verified &&
+                            <>
+                                <span>{fillerAadharData.firstName}{fillerAadharData.middleName}{fillerAadharData.lastName}</span>
+                            </>
+                        }
+                        <br></br>
+                        {
+                            fillerAadhar.aadharVerification.verified &&
+                            (<div><input className={relationVal ? 'normal-tb' : 'red-tb'}
+                                type="text"
+                                placeholder="Form filler's relation with deceased person"
+                                onChange={(e) => {
+                                    setRelation(e.target.value)
+                                }}
+                            ></input></div>)
 
-                    }
-                    {!relationVal && fillerAadhar.aadharVerification.verified && <span>Relation should at least contain 3 letters</span>}
+                        }
+                        {!relationVal && fillerAadhar.aadharVerification.verified && <span>Relation should at least contain 3 letters</span>}
+
+                    </div>
                 </div>
             }
             {/* Other Details */}
             {
                 fillerAadhar.aadharVerification.verified && relationVal &&
-                <div div className="death-form-filler-section">
-                    <h5>Other Details</h5>
+                <div style={{ "border": "1px solid black ", marginTop: "1vh", padding: "1vw", borderRadius: "10px" }} className="death-form-filler-section">
+                    <h5 style={{ fontWeight: "bold", paddingBottom: "1vh", letterSpacing: "1px" }}>⇛ Other Details</h5>
                     <>
-                        <h6>.jpeg, .jpg, .png with less than 1MB are allowed</h6>
-                        <span>Death declaration by hospital</span>
-                        <input
-                            accept="image/*"
-                            type="file"
-                            onChange={(e) => setHospital(e.target.files[0])}
-                        ></input>
-                        {hospitalVal && (
-                            <img
-                                style={{ width: "10vw", height: "20vh" }}
-                                src={hospitalBASE}
-                                alt="img"
-                            />
-                        )}
-                        <span>Crematorium declaration</span>
-                        <input
-                            accept="image/*"
-                            type="file"
-                            onChange={(e) => setLastPlace(e.target.files[0])}
-                        ></input>
-                        {lastPlaceVal && (
-                            <img
-                                style={{ width: "10vw", height: "20vh" }}
-                                src={lastPlaceBASE}
-                                alt="img"
-                            />
-                        )}
+                        <h6 style={{ fontWeight: "bold", paddingBottom: "1vh", letterSpacing: "1px" }}>.jpeg, .jpg, .png with less than 1MB are allowed</h6>
+                        <hr></hr>
+                        <div style={{ display: "flex", gap: "1vw", marginBottom: "1vh" }}>
+                            <span>Death declaration by hospital</span>
+                            <input
+                                accept="image/*"
+                                type="file"
+                                onChange={(e) => setHospital(e.target.files[0])}
+                            ></input>
+                            {hospitalVal && (
+                                <img
+                                    style={{ width: "10vw", height: "20vh" }}
+                                    src={hospitalBASE}
+                                    alt="img"
+                                />
+                            )}
+                        </div>
+                        <div>
+
+                            <span>Crematorium declaration</span>
+                            <input
+                                accept="image/*"
+                                type="file"
+                                onChange={(e) => setLastPlace(e.target.files[0])}
+                            ></input>
+                            {lastPlaceVal && (
+                                <img
+                                    style={{ width: "10vw", height: "20vh" }}
+                                    src={lastPlaceBASE}
+                                    alt="img"
+                                />
+                            )}
+                        </div>
                     </>
-                </div>
-            }
-            {
-                hospitalVal && lastPlaceVal &&
-                <button onClick={submit_death_form}>Submit</button>
-            }
-            {submitted &&
-                <div>
-                    <span>{submitAnswer.msg}</span>
+                    {
+                        hospitalVal && lastPlaceVal &&
+                        <button style={{ width: "auto" }} className='red' onClick={submit_death_form}>Submit</button>
+                    }
+                    {submitted &&
+                        <div>
+                            <span>{submitAnswer.msg}</span>
+                        </div>
+                    }
                 </div>
             }
         </div >

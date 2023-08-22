@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom'
-
+import { motion } from 'framer-motion';
 function ServicesContainer() {
     const NAVIGATE = useNavigate();
     const token = useSelector(state => state.auth.token);
@@ -11,35 +11,67 @@ function ServicesContainer() {
         }
     }, [NAVIGATE, token]);
     return (
-        <div className='dashboard-services-container'>
+        <motion.div className='dashboard-services-container'
+            initial={{ opacity: 0, y: '-100px' }}
+            animate={{ opacity: 1, y: '0px' }}
+            transition={{ duration: 1, delay: 0 }}
+        >
             {/* ? Birth Certificate details */}
-            <div className='dashboard-sub-container'>
-                <h3>Birth Certificate</h3>
-                <ul>
+            <div className='dashboard-sub-container' style={{ padding: "2vw" }}>
+                <motion.h3
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 1, delay: 0.6 }}
+                    style={{ fontWeight: "bold", borderBottom: "2px solid white", paddingBottom: "2vh" }}>Birth Certificate</motion.h3>
+                <motion.ul
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 1, delay: 0.6 }}
+                    style={{ "margin-top": "1vh", fontSize: "0.9rem" }}>
                     <h5>Basic details required</h5>
                     <li>Mother's aadhaar card</li>
                     <li>Father's aadhaar card</li>
                     <li>Decided child name</li>
-                </ul>
-                <ul>
+                </motion.ul>
+                <motion.ul
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 1, delay: 0.6 }}
+                    style={{ "margin-top": "1vh", fontSize: "0.9rem" }}>
                     <h5>Documents required</h5>
                     <li>Permanent address proof</li>
                     <li>Marriage certificate</li>
                     <li>Proof of Birth by hospital</li>
-                </ul>
-                <Link to='forms/birth-form'><button>Apply</button></Link>
+                </motion.ul>
+                <motion.div initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 1, delay: 0.6 }}>
+                    <Link to='forms/birth-form'><button className='blue'>Apply</button></Link>
+                </motion.div>
             </div>
             {/* ? Marriage Certificate details */}
-            <div className='dashboard-sub-container'>
-                <h3>Marriage Certificate</h3>
-                <ul>
-                    <h5>Basic details required</h5>
+            <div className='dashboard-sub-container' style={{ padding: "2vw" }}>
+                <motion.h3
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 1, delay: 0.6 }}
+                    style={{ fontWeight: "bold", borderBottom: "2px solid white", paddingBottom: "2vh" }}>Marriage Certificate</motion.h3>
+                <motion.ul
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 1, delay: 0.6 }}
+                    style={{ "margin-top": "1vh", fontSize: "0.9rem" }}>
+                    <h5> Basic details required</h5>
                     <li>Husband's aadhaar card</li>
                     <li>Wife's aadhaar card</li>
                     <li>Aadhaar card of witness 1</li>
                     <li>Aadhaar card of witness 2</li>
-                </ul>
-                <ul>
+                </motion.ul>
+                <motion.ul
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 1, delay: 0.6 }}
+                    style={{ "margin-top": "1vh", fontSize: "0.9rem" }}>
                     <h5>Documents required</h5>
                     <li>Husband's signature</li>
                     <li>Wife's signature</li>
@@ -47,24 +79,41 @@ function ServicesContainer() {
                     <li>Husband's birth certificate</li>
                     <li>Wife's birth certificate</li>
                     <li>Marriage photos</li>
-                </ul>
-                <Link to='forms/marriage-form'><button>Apply</button></Link>
+                </motion.ul>
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 1, delay: 0.6 }}>
+
+                    <Link to='forms/marriage-form'><button className='blue'>Apply</button></Link>
+                </motion.div>
             </div>
             {/* ? Death Certificate details */}
-            <div className='dashboard-sub-container'>
-                <h3>Death Certificate</h3>
-                <ul>
+            <div className='dashboard-sub-container' style={{ padding: "2vw" }}>
+                <motion.h3 initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 1, delay: 0.6 }} style={{ fontWeight: "bold", borderBottom: "2px solid white", paddingBottom: "2vh" }}>Death Certificate</motion.h3>
+                <motion.ul initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 1, delay: 0.6 }} style={{ "margin-top": "1vh", fontSize: "0.9rem" }}>
                     <h5>Basic details required</h5>
                     <li>Deceased person's aadhaar card</li>
                     <li>Form filler's aadhaar card</li>
-                </ul>
-                <ul>
+                </motion.ul>
+                <motion.ul initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 1, delay: 0.6 }} style={{ "margin-top": "1vh", fontSize: "0.9rem" }}>
                     <h5>Documents required</h5>
                     <li>Death declaration by hospital</li>
-                </ul>
-                <Link to='forms/death-form'><button>Apply</button></Link>
+                    <li>Crematorium declaration</li>
+                </motion.ul>
+                <motion.div initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 1, delay: 0.6 }}>
+                    <Link to='forms/death-form'><button className='blue'>Apply</button></Link>
+                </motion.div>
             </div>
-        </div>
+        </motion.div>
     )
 }
 

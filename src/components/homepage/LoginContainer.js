@@ -83,12 +83,19 @@ function LoginContainer({ API }) {
         <>
             <div id='homepage-login-container' className='homepage-login-container'>
                 <h4>LOGIN</h4>
-                <input type="text" onChange={e => setAadharNumber(e.target.value)} placeholder='Aadhar number'></input>
-                {aadharNumberVal === false ? <span>Please enter a valid aadhar number</span> : null}
-                <input type='password' onChange={e => setPassword(e.target.value)} placeholder='Password'></input>
-                {passwordVal === false ? <span>Please enter a valid pattern</span> : null}
-                {aadharNumberVal && passwordVal && <button onClick={login_citizen}>Login</button>}
-                {loginActionVal ? <span>{validMsg}</span> : <span>{invalidMsg}</span>}
+                <div>
+
+                    <div style={{ margin: "1vw" }}>
+                        <input style={{ margin: "1vw" }} type="text" className={aadharNumberVal ? 'normal-tb' : 'red-tb'} onChange={e => setAadharNumber(e.target.value)} placeholder='Aadhar number'></input>
+                        {aadharNumberVal === false ? <span>Please enter a valid aadhar number</span> : null}
+                    </div>
+                    <div style={{ margin: "1vw" }}>
+                        <input style={{ margin: "1vw" }} className={passwordVal ? 'normal-tb' : 'red-tb'} type='password' onChange={e => setPassword(e.target.value)} placeholder='Password'></input>
+                        {passwordVal === false ? <span>Please enter a valid pattern</span> : null}
+                        {loginActionVal ? <span>{validMsg}</span> : <span>{invalidMsg}</span>}
+                    </div>
+                    {aadharNumberVal && passwordVal && <button style={{ width: "10%", "margin-left": "2vw" }} className='blue' onClick={login_citizen}>Login</button>}
+                </div>
             </div>
             <div id='homepage-login-container2' style={{ display: 'none' }} className='homepage-login-container'>
                 <h3>Login Successful</h3>

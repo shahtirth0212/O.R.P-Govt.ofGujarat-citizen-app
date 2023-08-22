@@ -7,10 +7,10 @@ function LeftNavBar() {
     return (
         <>
             <motion.div className='dashboard-leftnavbar-container'>
-                <Link to="/dashboard"><button className='dashboard-nav-button'>Services</button></Link>
-                <Link to="applied"><button className='dashboard-nav-button'>Applied</button></Link>
-                <Link to="update-profile"><button className='dashboard-nav-button'>Update Profile</button></Link>
-                <Link to="logout"><button className='dashboard-nav-button'>Logout</button></Link>
+                <Link style={{ margin: "0.5vh 0.5vw 0.5vh 0.5vw" }} to="/dashboard"><button className='blue'>Services</button></Link>
+                <Link style={{ margin: "0.5vh 0.5vw 0.5vh 0.5vw" }} to="applied"><button className='blue'>Applied</button></Link>
+                {/* <Link style={{ margin: "0.5vh 0.5vw 0.5vh 0.5vw" }} to="update-profile"><button className='blue'>Update Profile</button></Link> */}
+                <Link style={{ margin: "0.5vh 0.5vw 0.5vh 0.5vw" }} to="logout"><button className='red'>Logout</button></Link>
             </motion.div>
         </>
     )

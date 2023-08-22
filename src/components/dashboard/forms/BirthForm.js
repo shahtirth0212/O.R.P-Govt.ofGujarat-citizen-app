@@ -5,7 +5,7 @@ import 'react-calendar/dist/Calendar.css';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-
+import { motion } from 'framer-motion';
 import { CITIZEN_ACTIONS } from '../../../redux-store/slices/citizen-slice';
 
 const ONLY_NUMBER_VALIDATOR = new RegExp('^[0-9]+$');
@@ -453,103 +453,137 @@ function BirthForm({ API }) {
                     dispatch(CITIZEN_ACTIONS.updateAppliedFor({ appliedFor: DATA.data.appliedFor }));
                     setSubmitted(true);
                     setSubmitAnswer({ err: DATA.err, msg: DATA.msg });
-                    setTimeout(() => {
-                        dispatch(CITIZEN_ACTIONS.setFilling({ filling: true }));
-                        NAVIGATE(`/dashboard/applied/book-slot/${placeOfBirth}/${0}/${DATA.data.appliedFor}`);
-                    }, 2000);
+                    dispatch(CITIZEN_ACTIONS.setFilling({ filling: true }));
+                    NAVIGATE(`/dashboard/applied/book-slot/${placeOfBirth}/${0}/${DATA.data.appliedFor}`);
                 }
             });
     }
     return (
-        <div className='dashboard-birth-form-container'>
-            <h3>Registration for Birth Certificate</h3>
+        <div style={{ padding: "2vw", backgroundColor: "#ffffff87", borderRadius: "8px", "backdrop-filter": "blur(3px)" }} className='dashboard-birth-form-container'>
+            <motion.h3 style={{ fontWeight: "bolder", paddingBottom: "1vh" }} initial={{ opacity: 0, y: '-100px' }}
+                animate={{ opacity: 1, y: '0px' }}
+                transition={{ duration: 0.4, delay: 0.4 }}>Registration for Birth Certificate</motion.h3>
             {/* Child Section */}
-            <div className='birth-form-child-section'>
-                <h5>Child details</h5>
-                <span>Date of Birth</span>
-                <DATEPICKER onChange={setChildDOB} format='MM-dd-yyyy' maxDate={new Date()} value={childDOB} />
-                {!childDOBVal && <span>Please enter a valid date</span>}
+            <motion.div style={{ "border": "1px solid black ", padding: "1vw", borderRadius: "10px" }} initial={{ opacity: 0, y: '-100px' }}
+                animate={{ opacity: 1, y: '0px' }}
+                transition={{ duration: 1, delay: 0.4 }} className='birth-form-child-section'>
+                <h5 style={{ fontWeight: "bold", paddingBottom: "1vh", letterSpacing: "1px" }}>⇛ Child details</h5>
 
-                <select defaultValue={-1} onChange={e => setChildGender(e.target.value)}>
-                    <option value={-1} disabled>Gender</option>
-                    {GENDERS.map(gender => <option key={gender} value={gender}>{gender}</option>)}
-                </select>
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.8, delay: 1 }}
+                    style={{ display: "flex", gap: "1vw", marginBottom: "1vh" }}>
+                    <span>Date of Birth</span>
+                    <DATEPICKER onChange={setChildDOB} format='MM-dd-yyyy' maxDate={new Date()} value={childDOB} />
+                    {!childDOBVal && <span>Please enter a valid date</span>}
+                    <select className='normal-tb' defaultValue={-1} onChange={e => setChildGender(e.target.value)}>
+                        <option className='normal-tb' value={-1} disabled>Gender</option>
+                        {GENDERS.map(gender => <option className='normal-tb' key={gender} value={gender}>{gender}</option>)}
+                    </select>
+                </motion.div>
 
-                <input type='text' onChange={e => setFirst(e.target.value)} placeholder='Frist Name'></input>
-                {!firstVal && <span>First name must be at least 3 characters long</span>}
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.8, delay: 1 }}
+                    style={{ display: "flex", gap: "1vw", marginBottom: "1vh" }}>
 
-                <input type='text' onChange={e => setMiddle(e.target.value)} placeholder='Middle Name'></input>
-                {!middleVal && <span>First name must be at least 3 characters long</span>}
+                    <input type='text' className={firstVal ? 'normal-tb' : 'red-tb'} onChange={e => setFirst(e.target.value)} placeholder='Frist Name'></input>
+                    {!firstVal && <span>First name must be at least 3 characters long</span>}
+                </motion.div>
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.8, delay: 1 }}
+                    style={{ display: "flex", gap: "1vw", marginBottom: "1vh" }}>
+                    <input type='text' className={middleVal ? 'normal-tb' : 'red-tb'} onChange={e => setMiddle(e.target.value)} placeholder='Middle Name'></input>
+                    {!middleVal && <span>Middle name must be at least 3 characters long</span>}
+                </motion.div>
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.8, delay: 1 }}
+                    style={{ display: "flex", gap: "1vw", marginBottom: "1vh" }}>
 
-                <input type='text' onChange={e => setLast(e.target.value)} placeholder='Last Name'></input>
-                {!lastVal && <span>First name must be at least 3 characters long</span>}
-
-                <input type='number' max={7.0} min={1.5} onChange={e => setWeight(e.target.value)} placeholder='Weight of child (kg)'></input>
-                {!weightVal && <span>Weight must be between 1.5-7.0kg</span>}
-
-                <select defaultValue={-1} onChange={e => setPlaceOfBirth(e.target.value)}>
-                    <option disabled value={-1}>Place of Birth</option>
-                    {DISTRICTS.map(district => <option key={district} value={district}>{district}</option>)}
-                </select>
-                {!placeOfBirthVal && <span>Please select a district</span>}
-            </div>
+                    <input type='text' className={lastVal ? 'normal-tb' : 'red-tb'} onChange={e => setLast(e.target.value)} placeholder='Last Name'></input>
+                    {!lastVal && <span>Last name must be at least 3 characters long</span>}
+                </motion.div>
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.8, delay: 1 }}
+                    style={{ display: "flex", gap: "1vw", marginBottom: "1vh" }}>
+                    <input type='number' className={weightVal ? 'normal-tb' : 'red-tb'} max={7.0} min={1.5} onChange={e => setWeight(e.target.value)} placeholder='Weight of child (kg)'></input>
+                    {!weightVal && <span>Weight must be between 1.5-7.0kg</span>}
+                    <select className='normal-tb' defaultValue={-1} onChange={e => setPlaceOfBirth(e.target.value)}>
+                        <option className='normal-tb' disabled value={-1}>Place of Birth</option>
+                        {DISTRICTS.map(district => <option className='normal-tb' key={district} value={district}>{district}</option>)}
+                    </select>
+                    {!placeOfBirthVal && <span>Please select a district</span>}
+                </motion.div>
+            </motion.div>
             {/* Mother Section */}
             {childDOBVal && childGenderVal && firstVal && middleVal && lastVal &&
                 weightVal && placeOfBirthVal &&
-                <div className='birth-form-mother-section'>
-                    <h5>Mother details</h5>
-                    <input
-                        disabled={motherAadhar.aadharVerification.verified}
-                        type='text'
-                        placeholder="Mother's aadhar number"
-                        onChange={e => {
+                <div style={{ "border": "1px solid black ", marginTop: "1vh", padding: "1vw", borderRadius: "10px" }} initial={{ opacity: 0, y: '-100px' }}
+                    animate={{ opacity: 1, y: '0px' }}
+                    transition={{ duration: 1, delay: 0.4 }} className='birth-form-mother-section'>
+                    <h5 style={{ fontWeight: "bold", paddingBottom: "1vh", letterSpacing: "1px" }}>⇛ Mother details</h5>
+                    <motion.div style={{ display: "flex", gap: "1vw", marginBottom: "1vh" }}>
+                        <input
+                            className={motherAadhar.aadharNumberVal ? 'normal-tb' : 'red-tb'}
+                            disabled={motherAadhar.aadharVerification.verified}
+                            type='text'
+                            placeholder="Mother's aadhar number"
+                            onChange={e => {
 
-                            motherDispatch({ type: "setAadhar", aadharNumber: e.target.value });
-                            motherDispatch({ type: "setAadharVal" });
+                                motherDispatch({ type: "setAadhar", aadharNumber: e.target.value });
+                                motherDispatch({ type: "setAadharVal" });
+                            }
+                            }
+                        ></input>
+                        {motherAadhar.aadharNumberVal && !motherAadhar.aadharVerification.verified && <button style={{ width: "auto" }} className='blue' onClick={verify_mother_aadhar}>Verify</button>}
+                        {motherAadhar.aadharOTP.sent !== null && !motherAadhar.aadharVerification.verified && <span>{motherAadhar.aadharOTP.msg}</span>}
+                        {motherAadhar.aadharOTP.sent && !motherAadhar.aadharVerification.verified
+                            &&
+                            <div>
+                                <span>{motherAadhar.aadharOTP.msg}</span>
+                                <input className={motherOTPVal ? 'normal-tb' : 'red-tb'} type='text' placeholder='OTP' onChange={e => setMotherOTP(e.target.value)}></input>
+                                {!motherOTPVal && <span>Enter 4 digit OTP</span>}
+                            </div>
                         }
+                        {motherAadhar.aadharVerification.verified !== null
+                            && <span style={{ color: "#0a7b0a", fontWeight: "600", letterSpacing: "1px" }}>{motherAadhar.aadharVerification.msg}</span>
                         }
-                    ></input>
-                    {motherAadhar.aadharNumberVal && !motherAadhar.aadharVerification.verified && <button onClick={verify_mother_aadhar}>Verify</button>}
-                    {motherAadhar.aadharOTP.sent !== null && !motherAadhar.aadharVerification.verified && <span>{motherAadhar.aadharOTP.msg}</span>}
-                    {motherAadhar.aadharOTP.sent && !motherAadhar.aadharVerification.verified
-                        &&
-                        <div>
-                            <span>{motherAadhar.aadharOTP.msg}</span>
-                            <input type='text' placeholder='OTP' onChange={e => setMotherOTP(e.target.value)}></input>
-                            {!motherOTPVal && <span>Enter 4 digit OTP</span>}
-                        </div>
-                    }
-                    {motherAadhar.aadharVerification.verified !== null
-                        && <span>{motherAadhar.aadharVerification.msg}</span>
-                    }
-                    {motherAadhar.aadharVerification.verified
-                        &&
-                        <span>{motherAadharData.firstName} {motherAadharData.middleName} {motherAadharData.lastName}</span>
-                    }
+                    </motion.div>
+                    <motion.div>
+                        {motherAadhar.aadharVerification.verified
+                            &&
+                            <span>{motherAadharData.firstName} {motherAadharData.middleName} {motherAadharData.lastName}</span>
+                        }
+                    </motion.div>
                     {
                         motherAadhar.aadharVerification.verified &&
-                        <div>
+                        <div style={{ display: "flex", gap: "1vw", marginBottom: "1vh" }}>
                             <div>
-                                <select defaultValue={-1} onChange={e => setMotherReligion(e.target.value)}>
-                                    <option value={-1} disabled>Mother's Religion</option>
-                                    {RELIGIONS.map(religion => <option key={religion} value={religion}>{religion}</option>)}
+                                <select className='normal-tb' defaultValue={-1} onChange={e => setMotherReligion(e.target.value)}>
+                                    <option className='normal-tb' value={-1} disabled>Mother's Religion</option>
+                                    {RELIGIONS.map(religion => <option className='normal-tb' key={religion} value={religion}>{religion}</option>)}
                                 </select>
                             </div>
                             <div>
-                                <select defaultValue={-1} onChange={e => setMotherLiteracy(e.target.value)}>
-                                    <option value={-1} disabled>Mother Literacy</option>
-                                    {LITERACIES.map(literacy => <option key={literacy} value={literacy}>{literacy}</option>)}
+                                <select className='normal-tb' defaultValue={-1} onChange={e => setMotherLiteracy(e.target.value)}>
+                                    <option className='normal-tb' value={-1} disabled>Mother Literacy</option>
+                                    {LITERACIES.map(literacy => <option className='normal-tb' key={literacy} value={literacy}>{literacy}</option>)}
                                 </select>
                             </div>
-                            <div>
-                                <input type='number' max={50} min={10} onChange={e => setMotherAgeBirth(e.target.value)} placeholder="Mother's age at birth of this child"></input>
+                            <div style={{ display: "flex", gap: "1vw" }}>
+                                <input className={motherAgeBirthVal ? 'normal-tb' : 'red-tb'} type='number' max={50} min={10} onChange={e => setMotherAgeBirth(e.target.value)} placeholder="Mother's age at birth of this child"></input>
                                 {!motherAgeBirthVal && <span>Please enter a valid age (10y-50y)</span>}
-                            </div>
-                            <div>
-                                <input type='text' onChange={e => setMotherOccupation(e.target.value)} placeholder="Mother's occupation"></input>
+                                <input className={motherOccupationVal ? 'normal-tb' : 'red-tb'} type='text' onChange={e => setMotherOccupation(e.target.value)} placeholder="Mother's occupation"></input>
                                 {!motherOccupationVal && <span>Please enter valid value - (Business, Job, etc)</span>}
                             </div>
-
                         </div>
                     }
                 </div>
@@ -558,54 +592,63 @@ function BirthForm({ API }) {
             {/* Father Section */}
             {motherAadhar.aadharVerification.verified && motherReligionVal
                 && motherLiteracyVal && motherAgeBirthVal && motherOccupationVal &&
-                < div className='birth-form-father-section'>
-                    <h5>Father details</h5>
-                    <input
-                        disabled={fatherAadhar.aadharVerification.verified}
-                        type='text'
-                        placeholder="Father's aadhar number"
-                        onChange={e => {
+                < div style={{ "border": "1px solid black ", marginTop: "1vh", padding: "1vw", borderRadius: "10px" }} className='birth-form-father-section'>
+                    <h5 style={{ fontWeight: "bold", paddingBottom: "1vh", letterSpacing: "1px" }}>⇛ Father details</h5>
+                    <div style={{ display: "flex", gap: "1vw", marginBottom: "1vh" }}>
+                        <input
+                            className={fatherAadhar.aadharNumberVal ? 'normal-tb' : 'red-tb'}
+                            disabled={fatherAadhar.aadharVerification.verified}
+                            type='text'
+                            placeholder="Father's aadhar number"
+                            onChange={e => {
 
-                            fatherDispatch({ type: "setAadhar", aadharNumber: e.target.value });
-                            fatherDispatch({ type: "setAadharVal" });
+                                fatherDispatch({ type: "setAadhar", aadharNumber: e.target.value });
+                                fatherDispatch({ type: "setAadharVal" });
+                            }
+                            }
+                        ></input>
+                        {fatherAadhar.aadharNumberVal && !fatherAadhar.aadharVerification.verified && <button style={{ width: "auto" }} className='blue' onClick={verify_father_aadhar}>Verify</button>}
+                        {fatherAadhar.aadharOTP.sent !== null && !fatherAadhar.aadharVerification.verified && <span>{fatherAadhar.aadharOTP.msg}</span>}
+                        {fatherAadhar.aadharOTP.sent && !fatherAadhar.aadharVerification.verified
+                            &&
+                            <div>
+                                <span>{fatherAadhar.aadharOTP.msg}</span>
+                                {/* ! */}
+                                <input className={fatherOTPVal ? 'normal-tb' : 'red-tb'} type='text' placeholder='OTP' onChange={e => setFatherOTP(e.target.value)}></input>
+                                {!fatherOTPVal && <span>Enter 4 digit OTP</span>}
+                            </div>
                         }
-                        }
-                    ></input>
-                    {fatherAadhar.aadharNumberVal && !fatherAadhar.aadharVerification.verified && <button onClick={verify_father_aadhar}>Verify</button>}
-                    {fatherAadhar.aadharOTP.sent !== null && !fatherAadhar.aadharVerification.verified && <span>{fatherAadhar.aadharOTP.msg}</span>}
-                    {fatherAadhar.aadharOTP.sent && !fatherAadhar.aadharVerification.verified
-                        &&
                         <div>
-                            <span>{fatherAadhar.aadharOTP.msg}</span>
-                            {/* ! */}
-                            <input type='text' placeholder='OTP' onChange={e => setFatherOTP(e.target.value)}></input>
-                            {!fatherOTPVal && <span>Enter 4 digit OTP</span>}
+
+                            {fatherAadhar.aadharVerification.verified !== null
+                                && <span style={{ color: "#0a7b0a", fontWeight: "600", letterSpacing: "1px" }}> {fatherAadhar.aadharVerification.msg}</span>
+                            }
                         </div>
-                    }
-                    {fatherAadhar.aadharVerification.verified !== null
-                        && <span>{fatherAadhar.aadharVerification.msg}</span>
-                    }
-                    {fatherAadhar.aadharVerification.verified
-                        &&
-                        <span>{fatherAadharData.firstName} {fatherAadharData.middleName} {fatherAadharData.lastName}</span>
-                    }
+                        <div>
+
+                            {fatherAadhar.aadharVerification.verified
+                                &&
+                                <span>{fatherAadharData.firstName} {fatherAadharData.middleName} {fatherAadharData.lastName}</span>
+                            }
+                        </div>
+                    </div>
                     {
                         fatherAadhar.aadharVerification.verified &&
-                        <div>
-                            <div>
-                                <select defaultValue={-1} onChange={e => setFatherReligion(e.target.value)}>
-                                    <option value={-1} disabled>Father's Religion</option>
-                                    {RELIGIONS.map(religion => <option key={religion} value={religion}>{religion}</option>)}
+                        <div style={{ display: "flex", gap: "1vw", marginBottom: "1vh" }}>
+                            <div >
+                                <select className='normal-tb' defaultValue={-1} onChange={e => setFatherReligion(e.target.value)}>
+                                    <option className='normal-tb' value={-1} disabled>Father's Religion</option>
+                                    {RELIGIONS.map(religion => <option className='normal-tb' key={religion} value={religion}>{religion}</option>)}
                                 </select>
                             </div>
                             <div>
-                                <select defaultValue={-1} onChange={e => setFatherLiteracy(e.target.value)}>
-                                    <option value={-1} disabled>Father Literacy</option>
-                                    {LITERACIES.map(literacy => <option key={literacy} value={literacy}>{literacy}</option>)}
+                                <select className='normal-tb' defaultValue={-1} onChange={e => setFatherLiteracy(e.target.value)}>
+                                    <option value={-1} className='normal-tb' disabled>Father Literacy</option>
+                                    {LITERACIES.map(literacy => <option className='normal-tb' key={literacy} value={literacy}>{literacy}</option>)}
                                 </select>
                             </div>
                             <div>
-                                <input type='text' onChange={e => setFatherOccupation(e.target.value)} placeholder="Father's occupation"></input>
+                                <input type='text' className={fatherOccupationVal ? 'normal-tb' : 'red-tb'} onChange={e => setFatherOccupation(e.target.value)} placeholder="Father's occupation"></input>
                                 {!fatherOccupationVal && <span>Please enter valid value - (Business, Job, etc)</span>}
                             </div>
 
@@ -617,60 +660,65 @@ function BirthForm({ API }) {
                 && motherLiteracyVal && motherAgeBirthVal && motherOccupationVal &&
                 fatherAadhar.aadharVerification.verified && fatherReligionVal
                 && fatherLiteracyVal && fatherOccupationVal &&
-                <div className='birth-form-other-section'>
-                    <h5>Other details</h5>
-                    <div>
-                        <select defaultValue={-1} onChange={e => setPostDelivery(e.target.value)}>
-                            <option value={-1} disabled>Post delivery treatment</option>
-                            {DELIVERY_TREATMENTS.map(treatment => <option value={treatment} key={treatment}>{treatment}</option>)}
-                        </select>
-                    </div>
-                    <div>
-                        <select defaultValue={-1} onChange={e => setDeliveryType(e.target.value)}>
-                            <option value={-1} disabled>Delivery type</option>
-                            {DELIVERY_TYPES.map(type => <option value={type} key={type}>{type}</option>)}
-                        </select>
-                    </div>
-                    <div>
-                        <input type='number' max={40} min={28} onChange={e => setPregDuration(e.target.value)} placeholder="Pregnancy duration (weeks)"></input>
-                        {!pregDurationVal && <span>Please enter a valid duration (28-40)</span>}
+                <div style={{ "border": "1px solid black ", marginTop: "1vh", padding: "1vw", borderRadius: "10px" }} className='birth-form-other-section'>
+                    <h5 style={{ fontWeight: "bold", paddingBottom: "1vh", letterSpacing: "1px" }}>⇛ Other details</h5>
+                    <div style={{ display: "flex", gap: "1vw", marginBottom: "1vh" }} >
+                        <div>
+                            <select className='normal-tb' defaultValue={-1} onChange={e => setPostDelivery(e.target.value)}>
+                                <option className='normal-tb' value={-1} disabled>Post delivery treatment</option>
+                                {DELIVERY_TREATMENTS.map(treatment => <option className='normal-tb' value={treatment} key={treatment}>{treatment}</option>)}
+                            </select>
+                        </div>
+                        <div>
+                            <select className='normal-tb' defaultValue={-1} onChange={e => setDeliveryType(e.target.value)}>
+                                <option className='normal-tb' value={-1} disabled>Delivery type</option>
+                                {DELIVERY_TYPES.map(type => <option className='normal-tb' value={type} key={type}>{type}</option>)}
+                            </select>
+                        </div>
+                        <div>
+                            <input className={pregDurationVal ? 'normal-tb' : 'red-tb'} type='number' max={40} min={28} onChange={e => setPregDuration(e.target.value)} placeholder="Pregnancy duration (weeks)"></input>
+                            {!pregDurationVal && <span>Please enter a valid duration (28-40)</span>}
+                        </div>
                     </div>
                 </div>
             }
             {
                 postDeliveryVal && deliveryTypeVal && pregDurationVal &&
-                <div className='birth-form-documents-section'>
-                    <h5>Other details</h5>
-                    <span>Note:- Only images are accepted(JPEG, JPG, PNG), less than 1MB</span>
-                    <div>
-                        <span>Permanent address proof</span>
-                        <input type='file' onChange={e => setAddressProofDOC(e.target.files[0])} accept="image/*"></input>
-                        {!addressProofDOCval && <span>Please upload a file</span>}
-                        {addressProofDOCval && < img style={{ width: "10vw", height: "20vh" }} src={addBase64} alt='img' />}
-                    </div>
-                    <div>
-                        <span>Marriage Certificate</span>
-                        <input type='file' onChange={e => setMarriageProofDOC(e.target.files[0])} accept="image/*"></input>
-                        {!marriageProofDOCval && <span>Please upload a file</span>}
-                        {marriageProofDOCval && <img style={{ width: "10vw", height: "20vh" }} src={marriageBase64} alt='img' />}
-                    </div>
-                    <div>
-                        <span>Birth proof</span>
-                        <input type='file' onChange={e => setBirthProofDOC(e.target.files[0])} accept="image/*"></input>
-                        {!birthProofDOCval && <span>Please upload a file</span>}
-                        {birthProofDOCval && <img style={{ width: "10vw", height: "20vh" }} src={birthBase64} alt='img' />}
+                <div style={{ "border": "1px solid black ", marginTop: "1vh", padding: "1vw", borderRadius: "10px" }} className='birth-form-documents-section'>
+                    <h5 style={{ fontWeight: "bold", paddingBottom: "1vh", letterSpacing: "1px" }}>⇛ Documents</h5>
+                    <span style={{ fontWeight: "bold", paddingBottom: "1vh", letterSpacing: "1px", marginBottom: "2vh" }}>Note:- Only images are accepted(JPEG, JPG, PNG), less than 1MB</span>
+                    <hr></hr>
+                    <div style={{ display: "flex", gap: "1vw", marginBottom: "1vh" }}>
+                        <div>
+                            <span>Permanent address proof</span>
+                            <input type='file' onChange={e => setAddressProofDOC(e.target.files[0])} accept="image/*"></input>
+                            {!addressProofDOCval && <span>Please upload a file</span>}
+                            {addressProofDOCval && < img style={{ width: "10vw", height: "20vh" }} src={addBase64} alt='img' />}
+                        </div>
+                        <div>
+                            <span>Marriage Certificate</span>
+                            <input type='file' onChange={e => setMarriageProofDOC(e.target.files[0])} accept="image/*"></input>
+                            {!marriageProofDOCval && <span>Please upload a file</span>}
+                            {marriageProofDOCval && <img style={{ width: "10vw", height: "20vh" }} src={marriageBase64} alt='img' />}
+                        </div>
+                        <div>
+                            <span>Birth proof</span>
+                            <input type='file' onChange={e => setBirthProofDOC(e.target.files[0])} accept="image/*"></input>
+                            {!birthProofDOCval && <span>Please upload a file</span>}
+                            {birthProofDOCval && <img style={{ width: "10vw", height: "20vh" }} src={birthBase64} alt='img' />}
+                        </div>
                     </div>
                 </div>
             }
             {
                 addressProofDOCval && marriageProofDOCval && birthProofDOCval &&
                 <div>
-                    <button onClick={submit_birth_form}>SUBMIT</button>
+                    <button style={{ margin: "2vw" }} className='green' onClick={submit_birth_form}>SUBMIT</button>
                 </div>
             }
             {submitted &&
-                <div>
-                    <span>{submitAnswer.msg}</span>
+                <div style={{ margin: "2vw" }}>
+                    <span style={{ margin: "2vw", fontWeight: "bold", paddingBottom: "1vh", letterSpacing: "1px" }}>{submitAnswer.msg}</span>
                 </div>
             }
         </div >

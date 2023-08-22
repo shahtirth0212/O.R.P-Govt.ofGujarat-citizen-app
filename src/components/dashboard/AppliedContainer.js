@@ -5,22 +5,24 @@ import { useNavigate } from 'react-router-dom';
 import { CITIZEN_ACTIONS } from '../../redux-store/slices/citizen-slice';
 import ConfirmDialog from '../UI/ConfirmDialog';
 import { SocketContext } from '../../context/socketContext';
-import { useCallback } from 'react';
+import { motion } from 'framer-motion';
 function AppliedContainer({ API }) {
     const socket = useContext(SocketContext);
     const NAVIGATE = useNavigate();
     const token = useSelector(state => state.auth.token);
-    useEffect(() => {
-        if (!token) {
-            NAVIGATE('/');
-        }
-    }, [NAVIGATE, token])
+    // console.log(token)
+    // if (token === null) {
+    //     console.log("here")
+    //     NAVIGATE('/login');
+    // }
+    // useEffect(() => {
+    // }, [])
     const ME = useSelector(state => state.citizen.citizen);
     const [waiting, setWaiting] = useState(false);
     const [appliedData, setAppliedData] = useState([]);
     const dispatch = useDispatch();
     useEffect(() => {
-        if (!token) {
+        if (token === null) {
             NAVIGATE("/login");
         } else {
             axios.post(`${API}/citizen/get-applied-data`, { citizenId: ME._id })
@@ -88,6 +90,7 @@ function AppliedContainer({ API }) {
             setConfirm(false);
             const callId = res.data.data.callId;
             setWaiting(true);
+            dispatch(CITIZEN_ACTIONS.setCurrent({ current: joiningSlot }));
             socket.emit('citizen-ready-to-join', { citizen: socket.id, clerk: callId, slot: joiningSlot });
             NAVIGATE('/verification')
         }
@@ -103,7 +106,9 @@ function AppliedContainer({ API }) {
         // eslint-disable-next-line
     }, [confirm]);
     return (
-        <div>
+        <motion.div initial={{ opacity: 0, y: '-100px' }}
+            animate={{ opacity: 1, y: '0px' }}
+            transition={{ duration: 1, delay: 0 }} style={{ height: "100vh" }}>
             {waiting && <h1>Please wait...</h1>}
             {showDialog &&
                 <ConfirmDialog
@@ -113,7 +118,9 @@ function AppliedContainer({ API }) {
             }
             <table className="table">
                 <thead className="thead-dark">
-                    <tr>
+                    <motion.tr initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 1, delay: 0 }}>
                         <th scope="col">No.</th>
                         <th scope="col">Form</th>
                         <th scope="col">Holder</th>
@@ -121,31 +128,68 @@ function AppliedContainer({ API }) {
                         <th scope="col">Join for verification</th>
                         <th scope="col">Verified</th>
                         <th scope="col">Get certificate</th>
-                    </tr>
+                    </motion.tr>
                 </thead>
-                <tbody>
+                <tbody style={{ background: "#ffffff94", fontWeight: "bold" }}>
                     {
                         appliedData.length > 0 ?
                             appliedData.map((data, i = 0) => {
                                 i++;
+                                console.log(data)
                                 return (
-                                    <tr key={data.applied._id}>
-                                        <th scope="row">{i}</th>
+                                    <motion.tr initial={{ opacity: 0, y: '-100px' }}
+                                        animate={{ opacity: 1, y: '0px' }}
+                                        transition={{ duration: 0.4, delay: 0.4 }} key={data.applied._id}>
+                                        <th scope="row">{i}.</th>
                                         <th scope="row">{data.form}</th>
                                         <td>{data.applied.holders[0].firstName} {data.applied.holders[1] && data.applied.holders[1].name}</td>
-                                        <td>{data.slot === null ? <button onClick={e => get_slot(data.applied)}>Book a slot</button> : new Date(data.slot.date).toDateString() + "   " + data.hours}</td>
-                                        {data.slot ?
-                                            <td>{check_today(data.hours, data.slot.date) ? <button onClick={e => {
-                                                setJoiningSlot(data.slot)
-                                                setShowDialog(true)
-                                                setHolder(data.applied.holders[0].firstName)
-                                            }} disabled={waiting}>send join request</button> : <span>Available on booked time</span>}</td>
-                                            :
-                                            <td>Book a slot first</td>
+                                        <td>{data.slot === null ? <button className='green' onClick={e => get_slot(data.applied)}>Book a slot</button> : new Date(data.slot.date).toDateString() + "   " + data.hours}</td>
+                                        {
+                                            data.slot
+                                                ? !data.applied.verified && new Date().getDate() > new Date(data.slot.date).getDate()
+                                                    ? <td> Expired</td>
+                                                    : data.applied.joined
+                                                        ? <td>Attended the call</td>
+                                                        :
+                                                        <td>{check_today(data.hours, data.slot.date) ? <button className='green' onClick={e => {
+                                                            setJoiningSlot(data.slot)
+                                                            setShowDialog(true)
+                                                            setHolder(data.applied.holders[0].firstName)
+                                                        }} disabled={waiting}>send join request</button>
+                                                            :
+                                                            <span>Available on booked time</span>}</td>
+                                                : <td>Book a slot first</td>
+
                                         }
-                                        <td>{data.applied.verified ? "yes" : "no"}</td>
-                                        <td>{data.applied.issued ? <button>Email the certificate</button> : "In progress"}</td>
-                                    </tr>
+                                        <td>{
+                                            !data.slot ?
+                                                "-" :
+                                                data.applied.joined
+                                                    ?
+                                                    data.applied.verified
+                                                        ? "Verified"
+                                                        : data.applied.objection.length > 0
+                                                            ? data.applied.objection
+                                                            : "Under Verification"
+                                                    :
+                                                    new Date().getDate() > new Date(data.slot.date).getDate()
+                                                        ?
+                                                        "Expired, Reason - Not attended"
+                                                        : "-"
+                                        }</td>
+                                        {
+
+                                        }
+                                        <td>{data.applied.issued && data.applied.verified ?
+                                            <button>Email the certificate</button>
+                                            :
+                                            data.slot && data.applied.joined && data.applied.objection.length > 0
+                                                ?
+                                                "Objection held"
+                                                : data.slot ? "-" : "-"
+                                        }
+                                        </td>
+                                    </motion.tr>
 
                                 )
                             }) : <tr>
@@ -155,7 +199,7 @@ function AppliedContainer({ API }) {
 
                 </tbody>
             </table>
-        </div>
+        </motion.div >
     )
 }
 

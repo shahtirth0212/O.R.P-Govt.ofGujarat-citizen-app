@@ -1,3 +1,7 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap");
+* {
+  font-family: "Poppins", sans-serif;
+}
 body {
   margin: 0px;
   overflow: hidden;
@@ -38,11 +42,12 @@ input::-webkit-inner-spin-button {
 }
 /* ? Left navbar styles */
 .dashboard-leftnavbar-container {
-  border: 2px solid red;
+  /* border: 2px solid red; */
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   height: 100%;
+  width: 100%;
 }
 .dashboard-leftnavbar-container > * {
   width: 100%;
@@ -53,7 +58,7 @@ input::-webkit-inner-spin-button {
 }
 /* ? Right container styles */
 .dashboard-right-container {
-  border: 2px solid green;
+  /* border: 2px solid green; */
 }
 
 /* ? Services container styles */
@@ -64,10 +69,15 @@ input::-webkit-inner-spin-button {
 }
 .dashboard-sub-container {
   display: flex;
+  border-radius: 12px;
+  background-color: rgba(0, 0, 0, 0.797);
+  backdrop-filter: blur(4px);
   flex-direction: column;
-  border: 2px solid yellow;
-  height: 100vh;
+  padding: 4%;
+  /* border: 2px solid yellow; */
+  height: 85vh;
   margin: 4% 5% 4% 5%;
+  color: rgb(165, 165, 165);
 }
 /*  ? Birth Form */
 .dashboard-birth-form-container {

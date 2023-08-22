@@ -25,7 +25,9 @@ import { useContext, useEffect } from "react";
 import { SocketContext } from "./context/socketContext";
 import VerificationWindow from "./components/verification/VerificationWindow";
 
+window.process = { env: { DEBUG: undefined } };
 const API = 'http://localhost:5000';
+// const API = 'https://online-requisition-portal-gujarat.onrender.com';
 const ROUTER = createBrowserRouter(
   [
     // Homepage paths

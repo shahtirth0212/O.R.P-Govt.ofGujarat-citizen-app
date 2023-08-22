@@ -5,6 +5,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import ConfirmDialog from '../../UI/ConfirmDialog';
 import { CITIZEN_ACTIONS } from '../../../redux-store/slices/citizen-slice';
 
+import { motion } from 'framer-motion';
 function BookSlot({ API }) {
     const NAVIGATE = useNavigate();
     const token = useSelector(state => state.auth.token);
@@ -71,16 +72,23 @@ function BookSlot({ API }) {
     return (
         <>
             {showDialog && <ConfirmDialog msg={slotDate} getConfirm={setConfirm} />}
-            <div>
+            <div style={{ gap: "3vw", display: "flex", flexWrap: "wrap", flexDirection: "row" }}>
                 {availableSlots.map(slot => {
                     slot.date = new Date(slot.date);
                     return (
-                        <button key={slot.date} onClick={e => book_slot(slot.date.toDateString(), slot.hours, slot)} >
-                            {slot.date.toDateString()}  {slot.hours}
-                        </button>
+                        <motion.button style={{ width: "20vw" }} initial={{ opacity: 0, x: '-100px' }}
+                            animate={{ opacity: 1, x: '0px' }}
+                            transition={{ duration: 0.4, delay: 0.4 }} className='green' key={slot.date} onClick={e => book_slot(slot.date.toDateString(), slot.hours, slot)} >
+                            {slot.date.toDateString()}<br></br>
+                            {slot.hours}
+                        </motion.button>
                     )
                 })}
-                <Link to='/dashboard'><button onClick={() => { dispatch(CITIZEN_ACTIONS.setFilling({ filling: false })); }}>Book later</button></Link>
+                <motion.div initial={{ opacity: 0, x: '-100px' }}
+                    animate={{ opacity: 1, x: '0px' }}
+                    transition={{ duration: 0.4, delay: 0.4 }}>
+                    <Link to='/dashboard'><button style={{ width: "auto" }} className='red' onClick={() => { dispatch(CITIZEN_ACTIONS.setFilling({ filling: false })); }}>Book later</button></Link>
+                </motion.div>
             </div>
             {
                 <span>{slotMsg}</span>

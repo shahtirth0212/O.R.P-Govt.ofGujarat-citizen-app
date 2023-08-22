@@ -791,10 +791,10 @@ function MarriageForm({ API }) {
                         dispatch(CITIZEN_ACTIONS.updateAppliedFor({ appliedFor: DATA.data.appliedFor }));
                         setSubmitted(true);
                         setSubmitAnswer({ err: DATA.err, msg: DATA.msg });
-                        setTimeout(() => {
-                            dispatch(CITIZEN_ACTIONS.setFilling({ filling: true }));
-                            NAVIGATE(`/dashboard/applied/book-slot/${husbandAadharData.district}/${1}/${DATA.data.appliedFor}`);
-                        }, 2000);
+
+                        dispatch(CITIZEN_ACTIONS.setFilling({ filling: true }));
+                        NAVIGATE(`/dashboard/applied/book-slot/${husbandAadharData.district}/${1}/${DATA.data.appliedFor}`);
+
                     }
                 });
         }
@@ -817,6 +817,7 @@ function MarriageForm({ API }) {
                     in husband's aadhar card
                 </span>
                 <input
+                    className={placeOfMarriageVal ? "normal-tb" : 'red-tb'}
                     type="text"
                     onChange={(e) => setPlaceOfMarriage(e.target.value)}
                     placeholder="Place Of Marriage"
@@ -828,6 +829,7 @@ function MarriageForm({ API }) {
                 <div className="marriage-form-husband-section">
                     <h5>Husband details</h5>
                     <input
+                        className={husbandAadhar.aadharNumberVal ? "normal-tb" : 'red-tb'}
                         disabled={husbandAadhar.aadharVerification.verified}
                         type="text"
                         placeholder="Husband's aadhar number"
@@ -841,7 +843,7 @@ function MarriageForm({ API }) {
                     ></input>
                     {husbandAadhar.aadharNumberVal &&
                         !husbandAadhar.aadharVerification.verified && (
-                            <button onClick={verify_husband_aadhar}>Verify</button>
+                            <button className="blue" onClick={verify_husband_aadhar}>Verify</button>
                         )}
                     {husbandAadhar.aadharOTP.sent !== null &&
                         !husbandAadhar.aadharVerification.verified && (
@@ -852,6 +854,7 @@ function MarriageForm({ API }) {
                             <div>
                                 <span>{husbandAadhar.aadharOTP.msg}</span>
                                 <input
+                                    className={husbandOTPVal ? "normal-tb" : 'red-tb'}
                                     type="text"
                                     placeholder="OTP"
                                     onChange={(e) => setHusbandOTP(e.target.value)}
@@ -877,6 +880,7 @@ function MarriageForm({ API }) {
 
                             <div>
                                 <select
+                                    className="normal-tb"
                                     defaultValue={-1}
                                     onChange={(e) => {
                                         husbandDetailsDispatch({
@@ -886,16 +890,21 @@ function MarriageForm({ API }) {
                                         husbandDetailsDispatch({ type: "setReligionVal" });
                                     }}
                                 >
-                                    <option disabled value={-1}>
+                                    <option disabled value={-1}
+                                        className="normal-tb"
+                                    >
                                         Husband Religion
                                     </option>
                                     {RELIGIONS.map((r) => (
-                                        <option value={r} key={r}>
+                                        <option value={r} key={r}
+                                            className="normal-tb"
+                                        >
                                             {r}
                                         </option>
                                     ))}
                                 </select>
                                 <select
+                                    className="normal-tb"
                                     defaultValue={-1}
                                     onChange={(e) => {
                                         husbandDetailsDispatch({
@@ -905,11 +914,11 @@ function MarriageForm({ API }) {
                                         husbandDetailsDispatch({ type: "setStatusVal" });
                                     }}
                                 >
-                                    <option disabled value={-1}>
+                                    <option className="normal-tb" disabled value={-1}>
                                         Husband status at the time of marriage
                                     </option>
                                     {MARRIAGE_STATUS.map((status) => (
-                                        <option value={status} key={status}>
+                                        <option className="normal-tb" value={status} key={status}>
                                             {status}
                                         </option>
                                     ))}
@@ -961,6 +970,7 @@ function MarriageForm({ API }) {
                     <div className="marriage-form-wife-section">
                         <h5>Wife details</h5>
                         <input
+                            className={wifeAadhar.aadharNumberVal ? 'normal-tb' : 'red-tb'}
                             disabled={wifeAadhar.aadharVerification.verified}
                             type="text"
                             placeholder="Wife's aadhar number"
@@ -974,7 +984,7 @@ function MarriageForm({ API }) {
                         ></input>
                         {wifeAadhar.aadharNumberVal &&
                             !wifeAadhar.aadharVerification.verified && (
-                                <button onClick={verify_wife_aadhar}>Verify</button>
+                                <button className="blue" onClick={verify_wife_aadhar}>Verify</button>
                             )}
                         {wifeAadhar.aadharOTP.sent !== null &&
                             !wifeAadhar.aadharVerification.verified && (
@@ -985,6 +995,7 @@ function MarriageForm({ API }) {
                                 <div>
                                     <span>{wifeAadhar.aadharOTP.msg}</span>
                                     <input
+                                        className={wifeOTPVal ? 'normal-tb' : 'red-tb'}
                                         type="text"
                                         placeholder="OTP"
                                         onChange={(e) => setWifeOTP(e.target.value)}
@@ -1009,6 +1020,7 @@ function MarriageForm({ API }) {
 
                                 <div>
                                     <select
+                                        className="normal-tb"
                                         defaultValue={-1}
                                         onChange={(e) => {
                                             wifeDetailsDispatch({
@@ -1018,16 +1030,17 @@ function MarriageForm({ API }) {
                                             wifeDetailsDispatch({ type: "setReligionVal" });
                                         }}
                                     >
-                                        <option disabled value={-1}>
+                                        <option className="normal-tb" disabled value={-1}>
                                             Wife Religion
                                         </option>
                                         {RELIGIONS.map((r) => (
-                                            <option value={r} key={r}>
+                                            <option className="normal-tb" value={r} key={r}>
                                                 {r}
                                             </option>
                                         ))}
                                     </select>
                                     <select
+                                        className="normal-tb"
                                         defaultValue={-1}
                                         onChange={(e) => {
                                             wifeDetailsDispatch({
@@ -1037,11 +1050,11 @@ function MarriageForm({ API }) {
                                             wifeDetailsDispatch({ type: "setStatusVal" });
                                         }}
                                     >
-                                        <option disabled value={-1}>
+                                        <option className="normal-tb" disabled value={-1}>
                                             Wife status at the time of marriage
                                         </option>
                                         {MARRIAGE_STATUS.map((status) => (
-                                            <option value={status} key={status}>
+                                            <option className="normal-tb" value={status} key={status}>
                                                 {status}
                                             </option>
                                         ))}
@@ -1097,6 +1110,7 @@ function MarriageForm({ API }) {
                         <h5>Witness 1 details</h5>
                         <div>
                             <input
+                                className={witness1FirstNameVal ? 'normal-tb' : 'red-tb'}
                                 type="text"
                                 placeholder="First name"
                                 onChange={(e) => {
@@ -1107,6 +1121,7 @@ function MarriageForm({ API }) {
                                 <span>Please use at least 3 letters</span>
                             )}
                             <input
+                                className={witness1MiddleNameVal ? 'normal-tb' : 'red-tb'}
                                 type="text"
                                 placeholder="Middle name"
                                 onChange={(e) => {
@@ -1117,6 +1132,7 @@ function MarriageForm({ API }) {
                                 <span>Please use at least 3 letters</span>
                             )}
                             <input
+                                className={witness1LastNameVal ? 'normal-tb' : 'red-tb'}
                                 type="text"
                                 placeholder="Last name"
                                 onChange={(e) => {
@@ -1132,6 +1148,7 @@ function MarriageForm({ API }) {
                             witness1LastNameVal && (
                                 <div>
                                     <input
+                                        className={witness1AgeVal ? 'normal-tb' : 'red-tb'}
                                         type="Number"
                                         max={100}
                                         min={18}
@@ -1144,23 +1161,24 @@ function MarriageForm({ API }) {
                                         <span>Witness1 at least 18 years old.</span>
                                     )}
                                     <input
+                                        className='normal-tb'
                                         type="text"
                                         placeholder="Address line"
                                         onChange={(e) => {
                                             setWitness1Address(prev => ({ ...prev, line1: e.target.value }))
                                         }}
                                     ></input>
-                                    <select
+                                    <select className='normal-tb'
                                         defaultValue={-1}
                                         onChange={(e) =>
                                             setWitness1Address(prev => ({ ...prev, district: e.target.value }))
                                         }
                                     >
-                                        <option disabled value={-1}>
+                                        <option className='normal-tb' disabled value={-1}>
                                             District
                                         </option>
                                         {DISTRICTS.map((district) => (
-                                            <option key={district} value={district}>
+                                            <option className='normal-tb' key={district} value={district}>
                                                 {district}
                                             </option>
                                         ))}
@@ -1221,6 +1239,7 @@ function MarriageForm({ API }) {
                         <h5>Witness 2 details</h5>
                         <div>
                             <input
+                                className={witness2FirstNameVal ? 'normal-tb' : 'red-tb'}
                                 type="text"
                                 placeholder="First name"
                                 onChange={(e) => {
@@ -1230,7 +1249,7 @@ function MarriageForm({ API }) {
                             {!witness2FirstNameVal && (
                                 <span>Please use at least 3 letters</span>
                             )}
-                            <input
+                            <input className={witness2MiddleNameVal ? 'normal-tb' : 'red-tb'}
                                 type="text"
                                 placeholder="Middle name"
                                 onChange={(e) => {
@@ -1240,7 +1259,7 @@ function MarriageForm({ API }) {
                             {!witness2MiddleNameVal && (
                                 <span>Please use at least 3 letters</span>
                             )}
-                            <input
+                            <input className={witness2LastNameVal ? 'normal-tb' : 'red-tb'}
                                 type="text"
                                 placeholder="Last name"
                                 onChange={(e) => {
@@ -1255,7 +1274,7 @@ function MarriageForm({ API }) {
                             witness2MiddleNameVal &&
                             witness2LastNameVal && (
                                 <div>
-                                    <input
+                                    <input className={witness2AgeVal ? 'normal-tb' : 'red-tb'}
                                         type="Number"
                                         max={100}
                                         min={18}
@@ -1267,24 +1286,24 @@ function MarriageForm({ API }) {
                                     {!witness2AgeVal && (
                                         <span>Witness1 at least 18 years old.</span>
                                     )}
-                                    <input
+                                    <input className='normal-tb'
                                         type="text"
                                         placeholder="Address line"
                                         onChange={(e) => {
                                             setWitness2Address(prev => ({ ...prev, line1: e.target.value }))
                                         }}
                                     ></input>
-                                    <select
+                                    <select className='normal-tb'
                                         defaultValue={-1}
                                         onChange={(e) =>
                                             setWitness2Address(prev => ({ ...prev, district: e.target.value }))
                                         }
                                     >
-                                        <option disabled value={-1}>
+                                        <option className='normal-tb' disabled value={-1}>
                                             District
                                         </option>
                                         {DISTRICTS.map((district) => (
-                                            <option key={district} value={district}>
+                                            <option className='normal-tb' key={district} value={district}>
                                                 {district}
                                             </option>
                                         ))}
@@ -1393,7 +1412,7 @@ function MarriageForm({ API }) {
             {
                 priestSignVal && marriagePhoto1Val && marriagePhoto2Val &&
                 <div>
-                    <button onClick={submit_marriage_form}>Submit</button>
+                    <button className="red" onClick={submit_marriage_form}>Submit</button>
                 </div>
             }
             {submitted &&

@@ -173,14 +173,14 @@ function RegisterContainer({ API }) {
                         initial="hidden"
                         animate="visible"
                         variants={aadhaarVariant}
-                        className={aadharNumberVal ? 'textbox' : 'textbox textbox-red'}
+                        className={aadharNumberVal ? 'normal-tb' : 'red-tb'}
                         onChange={(e) => setAadharNumber(e.target.value)}
                         placeholder='Aadhaar number'
                     >
                     </motion.input>
                     {aadharNumberVal === false && <span>Please enter a valid aadhar number</span>}
                     {aadharNumberVal && !server_aadharValid && <motion.button
-                        className={sending ? 'disabledBtn ' : 'auth-aadhar-btn'}
+                        className={sending ? 'green-disable ' : 'green'}
                         initial="hidden"
                         animate="visible"
                         variants={aadhaarVariant}
@@ -189,13 +189,15 @@ function RegisterContainer({ API }) {
                     >
                         {sending ? '...' : "Authenticate aadhaar"}
                     </motion.button>}
-                    {!server_aadharValid && <span>{InvalidAadharMsg}</span>}
-                    {server_aadharValid && <span>{OTPverified ? "Aadhar verified" : validAadharMsg}</span>}
+                    <div>
+                        {!server_aadharValid && <span>{InvalidAadharMsg}</span>}
+                        {server_aadharValid && <span>{OTPverified ? "Aadhar verified" : validAadharMsg}</span>}
+                    </div>
                 </div>
                 {
                     aadharOTPsent &&
                     <div>
-                        <input onChange={e => setAadharOTP(e.target.value)} placeholder='OTP' pattern="^[0-9]{4}$"></input>
+                        <input className={aadharOTPVal ? 'normal-tb' : 'red-tb'} onChange={e => setAadharOTP(e.target.value)} placeholder='OTP' pattern="^[0-9]{4}$"></input>
                         {!aadharOTPVal && <span>Please enter a valid 4 digit otp</span>}
                         {aadharOTPVal && !OTPverified && <span>{maliciousOTPMsg}</span>}
                     </div>
@@ -208,11 +210,11 @@ function RegisterContainer({ API }) {
                         <span>{serverEmail}</span>
                     </>
                 }
-                {(OTPverified) && <input onChange={e => setPassword(e.target.value)} placeholder='password' type='password'></input>}
+                {(OTPverified) && <input className={passwordVal ? 'normal-tb' : 'red-tb'} onChange={e => setPassword(e.target.value)} placeholder='password' type='password'></input>}
                 {passwordVal === false && (OTPverified) && <span>Password must contain 8-12 chars and at least 1 special char,1 digit and 1 uppercase</span>}
-                {(OTPverified) && <input onChange={e => setConfirmPassword(e.target.value)} placeholder='Confirm password' type='password'></input>}
+                {(OTPverified) && <input className={confirmPasswordVal ? 'normal-tb' : 'red-tb'} onChange={e => setConfirmPassword(e.target.value)} placeholder='Confirm password' type='password'></input>}
                 {confirmPasswordVal === false && (OTPverified) && <span>Passwords must be same</span>}
-                {canRegister === true ? <button onClick={register_citizen}>Register</button> : null}
+                {canRegister === true ? <button className='red' onClick={register_citizen}>Register</button> : null}
                 {registerErr !== null && <span>{registerMsg}</span>}
             </div >
             <div id='homepage-register-container2' style={{ display: 'none' }} className='homepage-register-container'>

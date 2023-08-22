@@ -133,7 +133,8 @@ hr {
   grid-area: HomePageRightContainer;
 }
 .homepage-main-content-container {
-  background-color: rgba(255, 255, 255, 0.674);
+  background-color: rgba(255, 255, 255, 0.532);
+  backdrop-filter: blur(4px);
   padding: 2%;
   border-radius: 10px;
 }
@@ -143,13 +144,15 @@ hr {
   border-radius: 4px;
   height: 7vh;
   /* justify-content: space-between; */
-  display: grid;
-  grid-template-columns: repeat(4, 110px);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  /* grid-template-columns: repeat(4, 110px);
   grid-template-rows: 1;
-  padding: 0% 0% 0% 0%;
+  padding: 0% 0% 0% 0%; */
 }
 .homepage-right-container-button-container > * {
-  margin: 0% 10% 0% 1%;
+  margin: 0 1vw 0 0vw;
 }
 
 /* ! Information container */
@@ -202,7 +205,7 @@ hr {
 
 /* ! Register Container */
 .homepage-register-container {
-  border: 2px solid red;
+  /* border: 2px solid red; */
   display: flex;
   flex-direction: column;
 }

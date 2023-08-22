@@ -73,7 +73,7 @@ function ButtonContainer() {
         <div className='homepage-right-container-button-container'>
             <Link to='/'>
                 <motion.button
-                    disabled={!infoActive} onClick={() => changeHandler(1)} className={infoActive ? 'greenButton' : 'disabledBtn'}
+                    disabled={!infoActive} onClick={() => changeHandler(1)} className={infoActive ? 'green' : 'green-disable'}
                     variants={homeVariant}
                     initial="hidden"
                     animate="visible"
@@ -82,7 +82,7 @@ function ButtonContainer() {
             </Link>
             <Link to='register'>
                 <motion.button
-                    disabled={!registerActive} onClick={() => changeHandler(2)} className={registerActive ? 'redButton' : 'disabledBtn'}
+                    disabled={!registerActive} onClick={() => changeHandler(2)} className={registerActive ? 'red' : 'red-disable'}
                     variants={registerVariant}
                     initial="hidden"
                     animate="visible"
@@ -94,7 +94,7 @@ function ButtonContainer() {
                     variants={loginVariant}
                     initial="hidden"
                     animate="visible"
-                    disabled={!loginActive} onClick={() => changeHandler(3)} className={loginActive ? 'blueButton' : 'disabledBtn'}
+                    disabled={!loginActive} onClick={() => changeHandler(3)} className={loginActive ? 'blue' : 'blue-disable'}
                 >Login
                 </motion.button>
             </Link>
